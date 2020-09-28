@@ -31,11 +31,18 @@ def signal_handler(nsignal,frame):
 		
 
 def procesa_paquete(us,header,data):
-	global num_paquete, pdumper
-	logging.info('Nuevo paquete de {} bytes capturado en el timestamp UNIX {}.{}'.format(header.len,header.ts.tv_sec,header.ts.tv_sec))
+	global num_paquete, pdumper, args
+	logging.info('Nuevo paquete de {} bytes capturado en el timestamp UNIX {}.{}'.format(header.len,header.ts.tv_sec,header.ts.tv_usec))
 	num_paquete += 1
 	#TODO imprimir los N primeros bytes
+	for i in range(min([args.nbytes, header.len]):
+		print('{:X} '.format(data[i]))
+	print('\n')
 	#Escribir el tráfico al fichero de captura con el offset temporal
+	if pdumper is not None:
+		header.ts.tv_sec += TIME_OFFSET
+		pcap_dump(pdumper, header, data)
+
 	
 if __name__ == "__main__":
 	global pdumper,args,handle
@@ -57,6 +64,11 @@ if __name__ == "__main__":
 		parser.print_help()
 		sys.exit(-1)
 
+	if args.tracefile is not False and args.interface is not False:
+		logging.error('No se pueden especificar dos tipos de capturas')
+		parser.print_help()
+		sys.exit(-1)
+
 	signal.signal(signal.SIGINT, signal_handler)
 
 	errbuf = bytearray()
@@ -64,6 +76,10 @@ if __name__ == "__main__":
 	pdumper = None
 	
 	#TODO abrir la interfaz especificada para captura o la traza
+	if args.tracefile is not False:
+		handle = pcap_open_offline(args.tracefile, errbuf)
+	else:
+		handle = pcap_open_live(args.interface, ETH_FRAME_MAX, NO_PROMISC, TO_MS, errbuf)
 	#TODO abrir un dumper para volcar el tráfico (si se ha especificado interfaz) 
 	if not (args.interface is False):
 		handle2 = pcap_open_dead(ETH_LINKTYPE, ETH_FRAME_MAX)
@@ -78,6 +94,11 @@ if __name__ == "__main__":
 	elif ret == 0:
 		logging.debug('No mas paquetes o limite superado')
 	logging.info('{} paquetes procesados'.format(num_paquete))
+	
 	#TODO si se ha creado un dumper cerrarlo
+	if args.interface is not False:
+		pcap_dump_close(pdumper)
+	pcap_close(handle)
+	pcap_close(handle2)
 	
 
