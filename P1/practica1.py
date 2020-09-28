@@ -28,14 +28,14 @@ def signal_handler(nsignal,frame):
 	logging.info('Control C pulsado')
 	if handle:
 		pcap_breakloop(handle)
-		
+
 
 def procesa_paquete(us,header,data):
 	global num_paquete, pdumper, args
 	logging.info('Nuevo paquete de {} bytes capturado en el timestamp UNIX {}.{}'.format(header.len,header.ts.tv_sec,header.ts.tv_usec))
 	num_paquete += 1
 	#TODO imprimir los N primeros bytes
-	for i in range(min([args.nbytes, header.len]):
+	for i in range(min([args.nbytes, header.len])):
 		print('{:02X} '.format(data[i]))
 	print('\n')
 	#Escribir el tráfico al fichero de captura con el offset temporal
@@ -43,7 +43,7 @@ def procesa_paquete(us,header,data):
 		header.ts.tv_sec += TIME_OFFSET
 		pcap_dump(pdumper, header, data)
 
-	
+
 if __name__ == "__main__":
 	global pdumper,args,handle
 	parser = argparse.ArgumentParser(description='Captura tráfico de una interfaz ( o lee de fichero) y muestra la longitud y timestamp de los 50 primeros paquetes',
@@ -73,6 +73,7 @@ if __name__ == "__main__":
 
 	errbuf = bytearray()
 	handle = None
+	handle2 = None
 	pdumper = None
 	
 	#TODO abrir la interfaz especificada para captura o la traza
@@ -84,8 +85,8 @@ if __name__ == "__main__":
 	if args.interface is not False:
 		handle2 = pcap_open_dead(ETH_LINKTYPE, ETH_FRAME_MAX)
 		pdumper = pcap_dump_open(handle2, 'captura.{}.{}.pcap'.format(args.interface, time.time()))
-	
-	
+
+
 	ret = pcap_loop(handle,50,procesa_paquete,None)
 	if ret == -1:
 		logging.error('Error al capturar un paquete')
@@ -96,9 +97,10 @@ if __name__ == "__main__":
 	logging.info('{} paquetes procesados'.format(num_paquete))
 	
 	#TODO si se ha creado un dumper cerrarlo
-	if args.interface is not False:
+	if pdumper is not None:
 		pcap_dump_close(pdumper)
-	pcap_close(handle)
-	pcap_close(handle2)
-	
+	if handle is not None:
+		pcap_close(handle)
+	if handle2 is not None:
+		pcap_close(handle2)
 
