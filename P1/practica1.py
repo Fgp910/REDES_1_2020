@@ -17,6 +17,7 @@ import time
 import logging
 
 ETH_FRAME_MAX = 1514
+ETH_LINKTYPE = DLT_EN10MB
 PROMISC = 1
 NO_PROMISC = 0
 TO_MS = 10
@@ -64,7 +65,9 @@ if __name__ == "__main__":
 	
 	#TODO abrir la interfaz especificada para captura o la traza
 	#TODO abrir un dumper para volcar el tráfico (si se ha especificado interfaz) 
-	
+	if not (args.interface is False):
+		handle2 = pcap_open_dead(ETH_LINKTYPE, ETH_FRAME_MAX)
+		pdumper = pcap_dump_open(handle2, 'captura.{}.{}.pcap'.format(args.interface, time.time()))
 	
 	
 	ret = pcap_loop(handle,50,procesa_paquete,None)
