@@ -35,9 +35,10 @@ def procesa_paquete(us,header,data):
 	logging.info('Nuevo paquete de {} bytes capturado en el timestamp UNIX {}.{}'.format(header.len,header.ts.tv_sec,header.ts.tv_usec))
 	num_paquete += 1
 	#TODO imprimir los N primeros bytes
+	byteStr = ""
 	for i in range(min([args.nbytes, header.len])):
-		print('{:02X} '.format(data[i]))
-	print('\n')
+		byteStr += '{:02X} '.format(data[i])
+	print(byteStr)
 	#Escribir el tráfico al fichero de captura con el offset temporal
 	if pdumper is not None:
 		header.ts.tv_sec += TIME_OFFSET
