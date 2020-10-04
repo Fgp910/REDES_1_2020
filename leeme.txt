@@ -1,10 +1,35 @@
 Autores: Ana Calzada García, Leandro García Ortiz y Fabián Gutiérrez Peña
 
 Criterios de evaluación:
-Normativa de entrega cumplida en su totalidad: Realizado.
-Contar paquetes de una traza: Realizado: Se ha comprobado que el número de paquete que muestra nuestro programa coincide con el que indica Wireshark.
-Contar paquetes de la interfaz de red: No-Realizado.
-Almacenar en una traza el tráfico capturado en vivo: Realizado: Se ha comprobado que todos los bytes de la traza capturado coincide con lo que indica Wireshark en un conjunto diverso de paquetes.
-Modificar fecha correctamente: No-Realizado.
-Imprimir los N primeros bytes de un paquete y validarlo con Wireshark (captura de pantalla): Parcialmente-Realizado: Se imprimen correctamente solamente los 5 primeros bytes.
-Cuestionario "Ejercicios de captura de tráfico": No-Realizado.
+-Normativa de entrega cumplida en su totalidad: Realizado: Se realizaron varias
+ relecturas del enunciado a lo largo de la realización de la práctica.
+
+-Fichero leeme.txt bien explicado: Realizado: Se confeccionó el presente fichero
+ a medida que se iban cumpliendo cada uno de los criterios solicitados.
+
+-Contar paquetes de una traza: Realizado: Se ha comprobado que el número de
+ paquetes que muestra nuestro programa coincide con el que indica Wireshark.
+
+-Contar paquetes de la interfaz de red: No-Realizado.
+
+-Usar un único "flujo" para traza e interfaz: Realizado: La variable handle
+ recibe el descriptor devuelto por pcap_open_offline u pcap_open_live en caso de
+ que el tráfico a utilizar provenga de una traza o de una interfaz,
+ respectivamente. El resto del programa trabaja con dicha variable en cualquier
+ caso de forma transparente.
+
+-Almacenar en una traza el tráfico capturado en vivo: Realizado: Se ha
+ comprobado que todos los bytes de la traza capturada coincide con lo que indica
+ Wireshark en un conjunto diverso de paquetes.
+
+-Modificar fecha correctamente: Realizado: Se comprobó que el tiempo UNIX
+ mostrado en la captura en vivo y el mostrado posteriormente de la traza
+ almacenada difieren en 1800 segundos (30 minutos), siendo el tiempo de la traza
+ siempre posterior.
+
+-Imprimir los N primeros bytes de un paquete (pruebe para N > 15) y validarlo
+ con Wireshark (captura de pantalla): Realizado: Se imprimen correctamente los
+ 16 primeros bytes.
+
+-Cuestionario "Ejercicios de captura de tráfico": Realizado: Se realizaron
+ múltiples relecturas del cuestionario.
