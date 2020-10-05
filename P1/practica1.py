@@ -81,7 +81,7 @@ if __name__ == "__main__":
 	if args.tracefile is not False:
 		handle = pcap_open_offline(args.tracefile, errbuf)
 	else:
-		handle = pcap_open_live(args.interface, ETH_FRAME_MAX, NO_PROMISC, TO_MS, errbuf)
+		handle = pcap_open_live(args.interface, ETH_FRAME_MAX, PROMISC, TO_MS, errbuf)
 	#TODO abrir un dumper para volcar el tráfico (si se ha especificado interfaz) 
 	if args.interface is not False:
 		handle2 = pcap_open_dead(ETH_LINKTYPE, ETH_FRAME_MAX)
