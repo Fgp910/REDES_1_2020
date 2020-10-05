@@ -88,7 +88,7 @@ if __name__ == "__main__":
 		pdumper = pcap_dump_open(handle2, 'captura.{}.{}.pcap'.format(args.interface, time.time()))
 
 
-	ret = pcap_loop(handle,50,procesa_paquete,None)
+	ret = pcap_loop(handle,-1,procesa_paquete,None)
 	if ret == -1:
 		logging.error('Error al capturar un paquete')
 	elif ret == -2:
