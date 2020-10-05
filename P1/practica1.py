@@ -51,7 +51,7 @@ if __name__ == "__main__":
 	formatter_class=RawTextHelpFormatter)
 	parser.add_argument('--file', dest='tracefile', default=False,help='Fichero pcap a abrir')
 	parser.add_argument('--itf', dest='interface', default=False,help='Interfaz a abrir')
-	parser.add_argument('--nbytes', dest='nbytes', type=int, default=14,help='Número de bytes a mostrar por paquete')
+	parser.add_argument('--nbytes', dest='nbytes', type=int, default=16,help='Número de bytes a mostrar por paquete')
 	parser.add_argument('--debug', dest='debug', default=False, action='store_true',help='Activar Debug messages')
 	args = parser.parse_args()
 

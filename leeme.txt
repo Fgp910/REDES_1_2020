@@ -1,5 +1,8 @@
 Autores: Ana Calzada García, Leandro García Ortiz y Fabián Gutiérrez Peña
 
+Comentarios:
+-Si se omite el argumento --nbytes, se toma por defecto 16, como Wireshark.
+
 Criterios de evaluación:
 -Normativa de entrega cumplida en su totalidad: Realizado: Se realizaron varias
  relecturas del enunciado a lo largo de la realización de la práctica.
