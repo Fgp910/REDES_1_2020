@@ -1,7 +1,8 @@
 Autores: Ana Calzada García, Leandro García Ortiz y Fabián Gutiérrez Peña
 
 Comentarios:
--Si se omite el argumento --nbytes, se toma por defecto 16, como Wireshark.
+-Si se omite el argumento --nbytes, se toma por defecto 16, como las filas en
+ Wireshark.
 
 Criterios de evaluación:
 -Normativa de entrega cumplida en su totalidad: Realizado: Se realizaron varias
