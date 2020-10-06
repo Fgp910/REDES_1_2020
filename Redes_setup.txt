@@ -1,0 +1,13 @@
+# 1. Cambiar correo, username y nombre de la carpeta compartida
+# 2. Ejecutar sudo su root y meter contraseña
+# 3. Pegar esto en terminal
+
+git clone https://github.com/Fgp910/REDES_1_2020.git
+rm /etc/fuse.conf
+cp REDES_1_2020/fuse.conf /etc/fuse.conf
+mkdir RedesSharedFolder
+/usr/bin/vmhgfs-fuse .host:/RedesSharedFolder /home/redes/RedesSharedFolder -o subtype=vmhgfs-fuse,allow_other
+su redes
+git config --global user.email "leandroGO@github.com"
+git config --global user.name "leandroGO"
+
