@@ -1,8 +1,13 @@
-Autores: Ana Calzada García, Leandro García Ortiz y Fabián Gutiérrez Peña
+Autores: Ana Calzada García, Leandro García Ortiz y Fabián Gutiérrez Peña.
 
 Comentarios:
--Si se omite el argumento --nbytes, se toma por defecto 16, como las filas en
- Wireshark.
+-Si se omite el argumento --nbytes en nuestro programa, se toma por defecto 16,
+ como las filas en Wireshark.
+
+-Para los ejercicios de Wireshark se realizaron tres capturas distntas, como
+ indicaba el enunciado. El fichero practica1.pcap se refiere a la generada en el
+ primer ejercicio, practica1_2.pcap a la utilizada en los ejercicios posteriores
+ y practica1_udp.pcap a la realizada con un filtro de captura udp.
 
 Criterios de evaluación:
 -Normativa de entrega cumplida en su totalidad: Realizado: Se realizaron varias
@@ -14,10 +19,11 @@ Criterios de evaluación:
 -Contar paquetes de una traza: Realizado: Se ha comprobado que el número de
  paquetes que muestra nuestro programa coincide con el que indica Wireshark.
 
--Contar paquetes de la interfaz de red: No-Realizado.
+-Contar paquetes de la interfaz: Realizado: Se ha comprobado que el número de
+ paquetes que muestra nuestro programa coincide con el que indica Wireshark.
 
 -Usar un único "flujo" para traza e interfaz: Realizado: La variable handle
- recibe el descriptor devuelto por pcap_open_offline u pcap_open_live en caso de
+ recibe el descriptor devuelto por pcap_open_offline o pcap_open_live en caso de
  que el tráfico a utilizar provenga de una traza o de una interfaz,
  respectivamente. El resto del programa trabaja con dicha variable en cualquier
  caso de forma transparente.
