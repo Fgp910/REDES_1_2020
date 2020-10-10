@@ -1,5 +1,7 @@
 Autores: Ana Calzada García, Leandro García Ortiz y Fabián Gutiérrez Peña.
 
+--------------------------------------------------------------------------------
+
 Comentarios:
 -Si se omite el argumento --nbytes en nuestro programa, se toma por defecto 16,
  como las filas en Wireshark.
@@ -8,6 +10,8 @@ Comentarios:
  indicaba el enunciado. El fichero practica1.pcap se refiere a la generada en el
  primer ejercicio, practica1_2.pcap a la utilizada en los ejercicios posteriores
  y practica1_udp.pcap a la realizada con un filtro de captura udp.
+
+--------------------------------------------------------------------------------
 
 Criterios de evaluación:
 -Normativa de entrega cumplida en su totalidad: Realizado: Se realizaron varias
