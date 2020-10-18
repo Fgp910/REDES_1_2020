@@ -1,0 +1,33 @@
+Autores: Ana Calzada García, Leandro García Ortiz y Fabián Gutiérrez Peña.
+
+--------------------------------------------------------------------------------
+
+Comentarios:
+
+--------------------------------------------------------------------------------
+
+Criterios de evaluación:
+-Normativa de entrega cumplida en su totalidad: Realizado: Se realizaron varias
+ relecturas del enunciado a lo largo de la realización de la práctica.
+
+-Fichero leeme.txt bien explicado: Realizado: Se confeccionó el presente fichero
+ a medida que se iban cumpliendo cada uno de los criterios solicitados.
+
+-Recibir tramas Ethernet, realizar comprobaciones y llamar correctamente a la
+ función de callback de nivel superior:
+
+-Enviar tramas Ethernet correctamente:
+
+-Enviar correctamente peticiones ARP:
+
+-Procesar correctametne peticiones ARP recibidas:
+
+-Enviar correctamente respuestas ARP:
+
+-Procesar correctamente respuestas ARP:
+
+-Manejo correcto de la cahcé ARP:
+
+-Uso correcto de Locks:
+
+-Realiza correctamente el ARP gratuito:
