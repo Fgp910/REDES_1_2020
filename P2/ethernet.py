@@ -65,9 +65,9 @@ def process_Ethernet_frame(us:ctypes.c_void_p,header:pcap_pkthdr,data:bytes) -> 
     '''
     global upperProtos
 
-    macOrigin = data[1:6]
-    macDestination = data[6:12]
-    ethertype = struct.unpack('B', data[12:14])
+    macOrigin = data[1:6]   #No sería [0:5]?
+    macDestination = data[6:12] #y [6:11]
+    ethertype = struct.unpack('B', data[12:14]) #y [12:13]
     payload = data[14:]
 
     if (macDestination != getHwAddr() and macDestination != broadcastAddr):
