@@ -147,6 +147,13 @@ def startEthernetLevel(interface:str) -> int:
     handle = None
     logging.debug('Función no implementada')
     #TODO: implementar aquí la inicialización de la interfaz y de las variables globales
+    if levelInitialized:
+        return -1
+
+    macAddress = getHwAddr(interface)
+    errbuf = bytearray()
+    handle = pcap_open_live(interface, ETH_FRAME_MAX, PROMISC, TO_MS, errbuf)
+    levelInitialized = True
 
     #Una vez hemos abierto la interfaz para captura y hemos inicializado las variables globales (macAddress, handle y levelInitialized) arrancamos
     #el hilo de recepción
@@ -168,7 +175,16 @@ def stopEthernetLevel()->int:
         Retorno: 0 si todo es correcto y -1 en otro caso
     '''
     logging.debug('Función no implementada')
-    return 0
+    try:
+        recvThread.stop()
+
+        if handle is not None:
+            pcap_close(handle)
+
+        levelInitialized = False
+        return 0
+    except:
+        return -1
     
 def sendEthernetFrame(data:bytes,len:int,etherType:int,dstMac:bytes) -> int:
     '''
