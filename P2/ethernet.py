@@ -207,7 +207,6 @@ def sendEthernetFrame(data:bytes,len:int,etherType:int,dstMac:bytes) -> int:
         Retorno: 0 si todo es correcto, -1 en otro caso
     '''
     global macAddress,handle
-    logging.debug('Función no implementada')
     frameLen = ETH_HDR_LEN + len
     if frameLen > ETH_FRAME_MAX:
         return -1
@@ -216,5 +215,14 @@ def sendEthernetFrame(data:bytes,len:int,etherType:int,dstMac:bytes) -> int:
 
     if frameLen < ETH_FRAME_MIN:
         frame += bytes('\0' * (ETH_FRAME_MIN - frameLen))
+        frameLen = ETH_FRAME_MIN
 
+    try:
+        ret = pcap_inject(handle, frame, frameLen)
+        if ret != frameLen:
+            print('Error en pcap_inject')
+            return -1
 
+        return 0
+    except:
+        return -1
