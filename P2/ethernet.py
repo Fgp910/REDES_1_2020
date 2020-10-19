@@ -16,6 +16,8 @@ import threading
 ETH_FRAME_MAX = 1514
 #Tamaño mínimo de una trama Ethernet
 ETH_FRAME_MIN = 60
+#Tamaño de la cabecera Ethernet
+ETH_HDR_LEN = 14
 PROMISC = 1
 NO_PROMISC = 0
 TO_MS = 10
@@ -126,8 +128,8 @@ def registerCallback(callback_func: Callable[[ctypes.c_void_p,pcap_pkthdr,bytes]
     '''
     global upperProtos
     #upperProtos es el diccionario que relaciona función de callback y ethertype
-    logging.debug('Función no implementada')
-    
+    upperProtos[ethertype] = callback_func
+
 
 def startEthernetLevel(interface:str) -> int:
     '''
@@ -145,22 +147,24 @@ def startEthernetLevel(interface:str) -> int:
     '''
     global macAddress,handle,levelInitialized,recvThread
     handle = None
-    logging.debug('Función no implementada')
     #TODO: implementar aquí la inicialización de la interfaz y de las variables globales
     if levelInitialized:
         return -1
 
-    macAddress = getHwAddr(interface)
-    errbuf = bytearray()
-    handle = pcap_open_live(interface, ETH_FRAME_MAX, PROMISC, TO_MS, errbuf)
-    levelInitialized = True
+    try:
+        macAddress = getHwAddr(interface)
+        errbuf = bytearray()
+        handle = pcap_open_live(interface, ETH_FRAME_MAX, PROMISC, TO_MS, errbuf)
+        levelInitialized = True
 
-    #Una vez hemos abierto la interfaz para captura y hemos inicializado las variables globales (macAddress, handle y levelInitialized) arrancamos
-    #el hilo de recepción
-    recvThread = rxThread()
-    recvThread.daemon = True
-    recvThread.start()
-    return 0
+        #Una vez hemos abierto la interfaz para captura y hemos inicializado las variables globales (macAddress, handle y levelInitialized) arrancamos
+        #el hilo de recepción
+        recvThread = rxThread()
+        recvThread.daemon = True
+        recvThread.start()
+        return 0
+    except:
+        return -1
 
 def stopEthernetLevel()->int:
     global macAddress,handle,levelInitialized,recvThread
@@ -174,7 +178,6 @@ def stopEthernetLevel()->int:
         Argumentos: Ninguno
         Retorno: 0 si todo es correcto y -1 en otro caso
     '''
-    logging.debug('Función no implementada')
     try:
         recvThread.stop()
 
@@ -185,7 +188,7 @@ def stopEthernetLevel()->int:
         return 0
     except:
         return -1
-    
+
 def sendEthernetFrame(data:bytes,len:int,etherType:int,dstMac:bytes) -> int:
     '''
         Nombre: sendEthernetFrame
@@ -205,5 +208,13 @@ def sendEthernetFrame(data:bytes,len:int,etherType:int,dstMac:bytes) -> int:
     '''
     global macAddress,handle
     logging.debug('Función no implementada')
-    
-        
+    frameLen = ETH_HDR_LEN + len
+    if frameLen > ETH_FRAME_MAX:
+        return -1
+
+    frame = bytes(struct.pack('!BBB', dstMac, srcMac, data))
+
+    if frameLen < ETH_FRAME_MIN:
+        frame += bytes('\0' * (ETH_FRAME_MIN - frameLen))
+
+
