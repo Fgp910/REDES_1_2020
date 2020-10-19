@@ -61,8 +61,21 @@ def process_Ethernet_frame(us:ctypes.c_void_p,header:pcap_pkthdr,data:bytes) -> 
         Retorno:
             -Ninguno
     '''
-    logging.debug('Trama nueva. Función no implementada')
-    #TODO: Implementar aquí el código que procesa una trama Ethernet en recepción
+    global upperProtos
+
+    macOrigin = data[1:6]
+    macDestination = data[6:12]
+    ethertype = struct.unpack('B', data[12:14])
+    payload = data[14:]
+
+    if (macDestination != getHwAddr() and macDestination != broadcastAddr):
+        return
+
+    if ethertype in upperProtos.keys():
+        callback = upperProtos[ethertype]
+        callback(us, header, payload, macOrigin)
+    else:
+        return
     
 
 def process_frame(us:ctypes.c_void_p,header:pcap_pkthdr,data:bytes) -> None:

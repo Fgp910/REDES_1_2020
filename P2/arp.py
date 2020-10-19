@@ -89,8 +89,20 @@ def processARPRequest(data:bytes,MAC:bytes)->None:
             -MAC: dirección MAC origen extraída por el nivel Ethernet
         Retorno: Ninguno
     '''
-    logging.debug('Función no implementada')
-    #TODO implementar aquí
+    macOrigin = data[8:14]
+    if macOrigin != MAC:
+        return
+    
+    ipOrigin = data[14:18]
+    ipDestination = data[24:28]
+
+    if ipDestination != getIP():
+        return
+    
+    response = createARPReply(ipOrigin, macOrigin)
+    sendEthernetFrame(response, len(response), 2054, macOrigin)
+
+
 def processARPReply(data:bytes,MAC:bytes)->None:
     '''
         Nombre: processARPReply
@@ -115,10 +127,27 @@ def processARPReply(data:bytes,MAC:bytes)->None:
         Retorno: Ninguno
     '''
     global requestedIP,resolvedMAC,awaitingResponse,cache
-    logging.debug('Función no implentada')    
-    #TODO implementar aquí
-        
 
+    macOrigin = data[8:14]
+    if macOrigin != MAC:
+        return
+    
+    ipOrigin = data[14:18]
+    macDestination = data[18:24]
+    ipDestination = data[24:28]
+
+    if ipDestination != getIP():
+        return
+        
+    with globalLock:
+        if ipOrigin != requestedIP:
+            return
+
+        resolvedMAC = macOrigin
+        with cacheLock:
+            cache[requestedIP] = resolvedMAC
+        awaitingResponse = False
+        requestedIP = None
 
 
 def createARPRequest(ip:int) -> bytes:
