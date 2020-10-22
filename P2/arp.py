@@ -25,6 +25,7 @@ ARPHeader = bytes([0x00,0x01,0x08,0x00,0x06,0x04])
 #longitud (en bytes) de la cabecera común ARP
 ARP_HLEN = 6
 
+
 #Variable que alamacenará que dirección IP se está intentando resolver
 requestedIP = None
 #Variable que alamacenará que dirección MAC resuelta o None si no se ha podido obtener
@@ -126,7 +127,7 @@ def processARPReply(data:bytes,MAC:bytes)->None:
             -MAC: dirección MAC origen extraída por el nivel Ethernet
         Retorno: Ninguno
     '''
-    global requestedIP,resolvedMAC,awaitingResponse,cache
+    global requestedIP,resolvedMAC,awaitingResponse,cache,globalLock,cacheLock
 
     macOrigin = data[8:14]
     if macOrigin != MAC:
@@ -160,8 +161,7 @@ def createARPRequest(ip:int) -> bytes:
     '''
     global myMAC,myIP
     frame = bytes()
-    logging.debug('Función no implementada')
-    #TODO implementar aqui
+    frame += ARPHeader + bytes([0x00, 0x01]) + myMAC + struct.pack('!I', myIP) + broadcastAddr + struct.pack('!I', ip)
     return frame
 
     
@@ -176,8 +176,7 @@ def createARPReply(IP:int ,MAC:bytes) -> bytes:
     '''
     global myMAC,myIP
     frame = bytes()
-    logging.debug('Función no implementada')
-    #TODO implementar aqui
+    frame += ARPHeader + bytes([0x00, 0x02]) + myMAC + struct.pack('!I', myIP) + MAC + struct.pack('!I', IP)
     return frame
 
 
