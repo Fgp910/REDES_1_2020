@@ -17,7 +17,7 @@ from threading import Lock
 from expiringdict import ExpiringDict
 
 #Semáforo global 
-globalLock =Lock()
+globalLock = Lock()
 #Dirección de difusión (Broadcast)
 broadcastAddr = bytes([0xFF]*6)
 #Cabecera ARP común a peticiones y respuestas. Específica para la combinación Ethernet/IP
@@ -67,8 +67,7 @@ def printCache()->None:
     print('{:>12}\t\t{:>12}'.format('IP','MAC'))
     with cacheLock:
         for k in cache:
-            if k in cache:
-                print ('{:>12}\t\t{:>12}'.format(socket.inet_ntoa(struct.pack('!I',k)),':'.join(['{:02X}'.format(b) for b in cache[k]])))
+            print ('{:>12}\t\t{:>12}'.format(socket.inet_ntoa(struct.pack('!I',k)),':'.join(['{:02X}'.format(b) for b in cache[k]])))
 
 
 
@@ -93,13 +92,13 @@ def processARPRequest(data:bytes,MAC:bytes)->None:
     macOrigin = data[8:14]
     if macOrigin != MAC:
         return
-    
+
     ipOrigin = data[14:18]
     ipDestination = data[24:28]
 
     if ipDestination != getIP():
         return
-    
+
     response = createARPReply(ipOrigin, macOrigin)
     sendEthernetFrame(response, len(response), 2054, macOrigin)
 
@@ -162,9 +161,10 @@ def createARPRequest(ip:int) -> bytes:
     global myMAC,myIP
     frame = bytes()
     frame += ARPHeader + bytes([0x00, 0x01]) + myMAC + struct.pack('!I', myIP) + broadcastAddr + struct.pack('!I', ip)
+    #frame = bytes(struct.pack('!BBBBB', ARPHeader, 0x0001, myMac,...))?
     return frame
 
-    
+
 def createARPReply(IP:int ,MAC:bytes) -> bytes:
     '''
         Nombre: createARPReply
