@@ -224,7 +224,7 @@ def sendEthernetFrame(data:bytes,len:int,etherType:int,dstMac:bytes) -> int:
         return -1
 
     #frame = bytes(struct.pack('!', dstMac, macAddress, etherType, data))
-    frame = dstMac + macAddress + bytes(struct.pack('!H', etherType)) + data
+    frame = dstMac + macAddress + struct.pack('!H', etherType) + data
 
     if frameLen < ETH_FRAME_MIN:
         frame += bytes('\0' * (ETH_FRAME_MIN - frameLen))
