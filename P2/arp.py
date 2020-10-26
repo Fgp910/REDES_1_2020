@@ -265,4 +265,23 @@ def ARPResolution(ip:int) -> bytes:
     global requestedIP,awaitingResponse,resolvedMAC
     logging.debug('Función no implementada')
     #TODO implementar aquí
+     with globalLock:
+        requestedIP = ip
+
+        with cacheLock
+            if ip in cache :
+                resolvedMAC = cache[ip]
+                return resolvedMAC
+            else:
+                request = createARPRequest(ip)
+                sendEthernetFrame(request, len(request), 2054, broadcastAddr)
+                numveces = 1
+
+                while awaitingResponse == True and numveces < 3:
+                    sendEthernetFrame(request, len(request), 2054, broadcastAddr)
+                    numveces += 1
+
+                if awaitingResponse == False:
+                    return resolvedMAC
+
     return None
