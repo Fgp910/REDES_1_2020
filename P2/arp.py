@@ -24,7 +24,9 @@ broadcastAddr = bytes([0xFF]*6)
 ARPHeader = bytes([0x00,0x01,0x08,0x00,0x06,0x04])
 #longitud (en bytes) de la cabecera común ARP
 ARP_HLEN = 6
-
+#Opcode de ARP
+ARPOpcodeRequest = bytes([0x00, 0x01])
+ARPOpcodeReply = bytes([0x00, 0x02])
 
 #Variable que alamacenará que dirección IP se está intentando resolver
 requestedIP = None
@@ -131,14 +133,14 @@ def processARPReply(data:bytes,MAC:bytes)->None:
     macOrigin = data[8:14]
     if macOrigin != MAC:
         return
-    
+
     ipOrigin = data[14:18]
     macDestination = data[18:24]
     ipDestination = data[24:28]
 
     if ipDestination != getIP():
         return
-        
+
     with globalLock:
         if ipOrigin != requestedIP:
             return
@@ -160,7 +162,7 @@ def createARPRequest(ip:int) -> bytes:
     '''
     global myMAC,myIP
     frame = bytes()
-    frame += ARPHeader + bytes([0x00, 0x01]) + myMAC + struct.pack('!I', myIP) + broadcastAddr + struct.pack('!I', ip)
+    frame += ARPHeader + ARPOpcodeRequest + myMAC + struct.pack('!I', myIP) + broadcastAddr + struct.pack('!I', ip)
     #frame = bytes(struct.pack('!BBBBB', ARPHeader, 0x0001, myMac,...))?
     return frame
 
@@ -176,7 +178,7 @@ def createARPReply(IP:int ,MAC:bytes) -> bytes:
     '''
     global myMAC,myIP
     frame = bytes()
-    frame += ARPHeader + bytes([0x00, 0x02]) + myMAC + struct.pack('!I', myIP) + MAC + struct.pack('!I', IP)
+    frame += ARPHeader + ARPOpcodeReply + myMAC + struct.pack('!I', myIP) + MAC + struct.pack('!I', IP)
     return frame
 
 
@@ -199,9 +201,15 @@ def process_arp_frame(us:ctypes.c_void_p,header:pcap_pkthdr,data:bytes,srcMac:by
             -srcMac: MAC origen de la trama Ethernet que se ha recibido
         Retorno: Ninguno
     '''
-    logging.debug('Función no implementada')
-    #TODO implementar aquí
+    capturedARPHeader = data[0:6]
+    if capturedARPHeader != ARPHeader:
+        return
 
+    opcode = data[6:8]
+    if opcode == ARPOpcodeRequest:
+        processARPRequest(data, srcMac)
+    elif opcode == ARPOpcodeReply:
+        processARPReply(data, srcMac)
 
 
 def initARP(interface:str) -> int:
