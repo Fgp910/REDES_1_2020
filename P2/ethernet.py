@@ -65,12 +65,13 @@ def process_Ethernet_frame(us:ctypes.c_void_p,header:pcap_pkthdr,data:bytes) -> 
     '''
     global upperProtos
 
-    macOrigin = data[1:6]   #No sería [0:5]?
-    macDestination = data[6:12] #y [6:11]
-    ethertype = struct.unpack('B', data[12:14]) #y [12:13]
+    #macOrigin, macDestination, ethertype, payload = struct.unpack('!BBBB', data)
+    macOrigin = data[0:6]
+    macDestination = data[6:12]
+    ethertype = struct.unpack('!H', data[12:14])
     payload = data[14:]
 
-    if (macDestination != getHwAddr() and macDestination != broadcastAddr):
+    if macDestination != getHwAddr() and macDestination != broadcastAddr:
         return
 
     if ethertype in upperProtos.keys():
@@ -78,7 +79,7 @@ def process_Ethernet_frame(us:ctypes.c_void_p,header:pcap_pkthdr,data:bytes) -> 
         callback(us, header, payload, macOrigin)
     else:
         return
-    
+
 
 def process_frame(us:ctypes.c_void_p,header:pcap_pkthdr,data:bytes) -> None:
     '''
@@ -103,7 +104,7 @@ class rxThread(threading.Thread):
     '''
     def __init__(self): 
         threading.Thread.__init__(self) 
-              
+
     def run(self): 
         global handle
         #Ejecuta pcap_loop. OJO: handle debe estar inicializado con el resultado de pcap_open_live
@@ -115,9 +116,6 @@ class rxThread(threading.Thread):
         if handle is not None:
             pcap_breakloop(handle)
 
-
-
-   
 
 def registerCallback(callback_func: Callable[[ctypes.c_void_p,pcap_pkthdr,bytes],None], ethertype:int) -> None:
     '''
@@ -183,7 +181,7 @@ def stopEthernetLevel()->int:
     global macAddress,handle,levelInitialized,recvThread
     '''
         Nombre: stopEthernetLevel
-        Descripción_ Esta función parará y liberará todos los recursos necesarios asociados al nivel Ethernet. 
+        Descripción_ Esta función parará y liberará todos los recursos necesarios asociados al nivel Ethernet.
             Esta función debe realizar, al menos, las siguientes tareas:
                 -Parar el hilo de recepción de paquetes 
                 -Cerrar la interfaz (handle de pcap)
@@ -193,6 +191,7 @@ def stopEthernetLevel()->int:
     '''
     try:
         recvThread.stop()
+        recvThread.join() #Espera a que el hilo finalice
 
         if handle is not None:
             pcap_close(handle)
@@ -224,7 +223,8 @@ def sendEthernetFrame(data:bytes,len:int,etherType:int,dstMac:bytes) -> int:
     if frameLen > ETH_FRAME_MAX:
         return -1
 
-    frame = bytes(struct.pack('!BBB', dstMac, srcMac, data))
+    #frame = bytes(struct.pack('!', dstMac, macAddress, etherType, data))
+    frame = dstMac + macAddress + bytes(struct.pack('!H', etherType)) + data
 
     if frameLen < ETH_FRAME_MIN:
         frame += bytes('\0' * (ETH_FRAME_MIN - frameLen))
