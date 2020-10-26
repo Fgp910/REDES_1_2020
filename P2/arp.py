@@ -24,6 +24,8 @@ broadcastAddr = bytes([0xFF]*6)
 ARPHeader = bytes([0x00,0x01,0x08,0x00,0x06,0x04])
 #longitud (en bytes) de la cabecera común ARP
 ARP_HLEN = 6
+#Ethertype ARP
+ethertype = 2054
 
 
 #Variable que alamacenará que dirección IP se está intentando resolver
@@ -32,6 +34,10 @@ requestedIP = None
 resolvedMAC = None
 #Variable que alamacenará True mientras estemos esperando una respuesta ARP
 awaitingResponse = False
+#Variable que almacenará la MAC propia
+myMac = None
+#Variable que almacenará la IP propia
+myIP = None
 
 #Variable para proteger la caché
 cacheLock = Lock()
@@ -89,6 +95,8 @@ def processARPRequest(data:bytes,MAC:bytes)->None:
             -MAC: dirección MAC origen extraída por el nivel Ethernet
         Retorno: Ninguno
     '''
+    global myIP
+    
     macOrigin = data[8:14]
     if macOrigin != MAC:
         return
@@ -96,11 +104,11 @@ def processARPRequest(data:bytes,MAC:bytes)->None:
     ipOrigin = data[14:18]
     ipDestination = data[24:28]
 
-    if ipDestination != getIP():
+    if ipDestination != myIP:
         return
 
     response = createARPReply(ipOrigin, macOrigin)
-    sendEthernetFrame(response, len(response), 2054, macOrigin)
+    sendEthernetFrame(response, len(response), ethertype, macOrigin)
 
 
 def processARPReply(data:bytes,MAC:bytes)->None:
@@ -126,7 +134,7 @@ def processARPReply(data:bytes,MAC:bytes)->None:
             -MAC: dirección MAC origen extraída por el nivel Ethernet
         Retorno: Ninguno
     '''
-    global requestedIP,resolvedMAC,awaitingResponse,cache,globalLock,cacheLock
+    global requestedIP,resolvedMAC,awaitingResponse,cache,globalLock,cacheLock,myIP
 
     macOrigin = data[8:14]
     if macOrigin != MAC:
@@ -136,7 +144,7 @@ def processARPReply(data:bytes,MAC:bytes)->None:
     macDestination = data[18:24]
     ipDestination = data[24:28]
 
-    if ipDestination != getIP():
+    if ipDestination != myIP:
         return
         
     with globalLock:
@@ -214,8 +222,16 @@ def initARP(interface:str) -> int:
             -Marcar la variable de nivel ARP inicializado a True
     '''
     global myIP,myMAC,arpInitialized
-    logging.debug('Función no implementada')
-    #TODO implementar aquí
+    
+    registerCallback(process_arp_frame, ethertype)
+    myIP = getIP()
+    myMAC = getHwAddr()
+
+    if ARPResolution(myIP) != None:
+        return 1
+
+    arpInitialized = True
+
     return 0
 
 def ARPResolution(ip:int) -> bytes:
