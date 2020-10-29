@@ -49,6 +49,8 @@ cache = ExpiringDict(max_len=100, max_age_seconds=10)
 
 #Número máximo de intentos de ARP
 MAX_RTX = 3
+#Tiempo de espera entre intentos de ARP
+SLEEP_TIME = 1
 
 def getIP(interface:str) -> int:
     '''
@@ -281,12 +283,9 @@ def ARPResolution(ip:int) -> bytes:
     while awaiting and nTimes < MAX_RTX:
         sendEthernetFrame(request, len(request), ethertype, broadcastAddr)
         nTimes += 1
+        time.sleep(SLEEP_TIME)
         with globalLock:
             awaiting = awaitingResponse
-
-        if awaiting:
-            #Sleep
-            pass
 
     if not awaiting:
         return resolvedMAC
