@@ -260,28 +260,35 @@ def ARPResolution(ip:int) -> bytes:
             Esta función necesitará comunicarse con el la función de recepción (para comprobar si hay respuesta y la respuesta en sí) mediante 3 variables globales:
                 -awaitingResponse: indica si está True que se espera respuesta. Si está a False quiere decir que se ha recibido respuesta
                 -requestedIP: contiene la IP por la que se está preguntando
-                -resolvedMAC: contiene la dirección MAC resuelta (en caso de que awaitingResponse) sea False.
+                -resolvedMAC: contiene la dirección MAC resuelta (en caso de que awaitingResponse sea False).
             Como estas variables globales se leen y escriben concurrentemente deben ser protegidas con un Lock
     '''
     global requestedIP,awaitingResponse,resolvedMAC
     #TODO implementar aquí
-     with globalLock:
+    with cacheLock:
+        if ip in cache:
+            resolvedMAC = cache[ip]
+            return resolvedMAC
+
+    request = createARPRequest(ip)
+    with globalLock:
         requestedIP = ip
+        awaitingResponse = True
 
-        with cacheLock
-            if ip in cache:
-                resolvedMAC = cache[ip]
-                return resolvedMAC
-            else:
-                request = createARPRequest(ip)
-                sendEthernetFrame(request, len(request), ethertype, broadcastAddr)
-                nTimes = 0
+    nTimes = 0
+    awaiting = True
 
-                while awaitingResponse and nTimes < MAX_RTX:
-                    sendEthernetFrame(request, len(request), ethertype, broadcastAddr)
-                    nTimes += 1
+    while awaiting and nTimes < MAX_RTX:
+        sendEthernetFrame(request, len(request), ethertype, broadcastAddr)
+        nTimes += 1
+        with globalLock:
+            awaiting = awaitingResponse
 
-                if not awaitingResponse:
-                    return resolvedMAC
+        if awaiting:
+            #Sleep
+            pass
+
+    if not awaiting:
+        return resolvedMAC
 
     return None
