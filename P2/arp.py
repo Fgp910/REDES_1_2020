@@ -47,7 +47,8 @@ cacheLock = Lock()
 #Caché de ARP. Es un diccionario similar al estándar de Python solo que eliminará las entradas a los 10 segundos
 cache = ExpiringDict(max_len=100, max_age_seconds=10)
 
-
+#Número máximo de intentos de ARP
+MAX_RTX = 3
 
 def getIP(interface:str) -> int:
     '''
@@ -99,7 +100,7 @@ def processARPRequest(data:bytes,MAC:bytes)->None:
         Retorno: Ninguno
     '''
     global myIP
-    
+
     macOrigin = data[8:14]
     if macOrigin != MAC:
         return
@@ -230,13 +231,13 @@ def initARP(interface:str) -> int:
             -Realizar una petición ARP gratuita y comprobar si la IP propia ya está asignada. En caso positivo se debe devolver error.
             -Marcar la variable de nivel ARP inicializado a True
     '''
-    global myIP,myMAC,arpInitialized
-    
+    global myIP, myMAC, arpInitialized
+
     registerCallback(process_arp_frame, ethertype)
     myIP = getIP()
     myMAC = getHwAddr()
 
-    if ARPResolution(myIP) != None:
+    if ARPResolution(myIP) is not None:
         return 1
 
     arpInitialized = True
@@ -263,25 +264,24 @@ def ARPResolution(ip:int) -> bytes:
             Como estas variables globales se leen y escriben concurrentemente deben ser protegidas con un Lock
     '''
     global requestedIP,awaitingResponse,resolvedMAC
-    logging.debug('Función no implementada')
     #TODO implementar aquí
      with globalLock:
         requestedIP = ip
 
         with cacheLock
-            if ip in cache :
+            if ip in cache:
                 resolvedMAC = cache[ip]
                 return resolvedMAC
             else:
                 request = createARPRequest(ip)
-                sendEthernetFrame(request, len(request), 2054, broadcastAddr)
-                numveces = 1
+                sendEthernetFrame(request, len(request), ethertype, broadcastAddr)
+                nTimes = 0
 
-                while awaitingResponse == True and numveces < 3:
-                    sendEthernetFrame(request, len(request), 2054, broadcastAddr)
-                    numveces += 1
+                while awaitingResponse and nTimes < MAX_RTX:
+                    sendEthernetFrame(request, len(request), ethertype, broadcastAddr)
+                    nTimes += 1
 
-                if awaitingResponse == False:
+                if not awaitingResponse:
                     return resolvedMAC
 
     return None
