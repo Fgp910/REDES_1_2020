@@ -79,7 +79,8 @@ def printCache()->None:
     print('{:>12}\t\t{:>12}'.format('IP','MAC'))
     with cacheLock:
         for k in cache:
-            print ('{:>12}\t\t{:>12}'.format(socket.inet_ntoa(struct.pack('!I',k)),':'.join(['{:02X}'.format(b) for b in cache[k]])))
+            if k in cache:
+                print ('{:>12}\t\t{:>12}'.format(socket.inet_ntoa(struct.pack('!I',k)),':'.join(['{:02X}'.format(b) for b in cache[k]])))
 
 
 
@@ -146,15 +147,15 @@ def processARPReply(data:bytes,MAC:bytes)->None:
     if macOrigin != MAC:
         return
 
-    ipOrigin = data[14:18]
+    ipOrigin = struct.unpack('!I', data[14:18])[0]
     macDestination = data[18:24]
-    ipDestination = data[24:28]
+    ipDestination = struct.unpack('!I', data[24:28])[0]
 
     if ipDestination != myIP:
         return
 
     with globalLock:
-        if ipOrigin != requestedIP:
+        if (not awaitingResponse) or ipOrigin != requestedIP:
             return
 
         resolvedMAC = macOrigin
@@ -168,14 +169,12 @@ def createARPRequest(ip:int) -> bytes:
     '''
         Nombre: createARPRequest
         Descripción: Esta función construye una petición ARP y devuelve la trama con el contenido.
-        Argumentos: 
+        Argumentos:
             -ip: dirección a resolver 
         Retorno: Bytes con el contenido de la trama de petición ARP
     '''
     global myMAC,myIP
-    frame = bytes()
-    frame += ARPHeader + ARPOpcodeRequest + myMAC + struct.pack('!I', myIP) + broadcastAddr + struct.pack('!I', ip)
-    #frame = bytes(struct.pack('!BBBBB', ARPHeader, 0x0001, myMac,...))?
+    frame = ARPHeader + ARPOpcodeRequest + myMAC + struct.pack('!I', myIP) + broadcastAddr + struct.pack('!I', ip)
     return frame
 
 
@@ -183,14 +182,13 @@ def createARPReply(IP:int ,MAC:bytes) -> bytes:
     '''
         Nombre: createARPReply
         Descripción: Esta función construye una respuesta ARP y devuelve la trama con el contenido.
-        Argumentos: 
+        Argumentos:
             -IP: dirección IP a la que contestar
             -MAC: dirección MAC a la que contestar
         Retorno: Bytes con el contenido de la trama de petición ARP
     '''
     global myMAC,myIP
-    frame = bytes()
-    frame += ARPHeader + ARPOpcodeReply + myMAC + struct.pack('!I', myIP) + MAC + struct.pack('!I', IP)
+    frame = ARPHeader + ARPOpcodeReply + myMAC + struct.pack('!I', myIP) + MAC + struct.pack('!I', IP)
     return frame
 
 

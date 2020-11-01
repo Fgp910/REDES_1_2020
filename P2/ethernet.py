@@ -65,12 +65,11 @@ def process_Ethernet_frame(us:ctypes.c_void_p,header:pcap_pkthdr,data:bytes) -> 
         Retorno:
             -Ninguno
     '''
-    global upperProtos
+    global upperProtos, macAddress
 
-    #macOrigin, macDestination, ethertype, payload = struct.unpack('!BBBB', data)
-    macOrigin = data[0:6]
-    macDestination = data[6:12]
-    ethertype = struct.unpack('!H', data[12:14])
+    macDestination = data[0:6]
+    macOrigin = data[6:12]
+    ethertype = struct.unpack('!H', data[12:14])[0]
     payload = data[14:]
 
     if macDestination != macAddress and macDestination != broadcastAddr:
@@ -224,7 +223,6 @@ def sendEthernetFrame(data:bytes,len:int,etherType:int,dstMac:bytes) -> int:
     if frameLen > ETH_FRAME_MAX:
         return -1
 
-    #frame = bytes(struct.pack('!', dstMac, macAddress, etherType, data))
     frame = dstMac + macAddress + struct.pack('!H', etherType) + data
 
     if frameLen < ETH_FRAME_MIN:
