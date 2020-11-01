@@ -25,6 +25,8 @@ TO_MS = 10
 broadcastAddr = bytes([0xFF]*6)
 #Diccionario que alamacena para un Ethertype dado qué función de callback se debe ejecutar
 upperProtos = {}
+#Bandera de nivel ethernet inicializado
+levelInitialized = False
 
 def getHwAddr(interface:str):
     '''
@@ -71,7 +73,7 @@ def process_Ethernet_frame(us:ctypes.c_void_p,header:pcap_pkthdr,data:bytes) -> 
     ethertype = struct.unpack('!H', data[12:14])
     payload = data[14:]
 
-    if macDestination != getHwAddr() and macDestination != broadcastAddr:
+    if macDestination != macAddress and macDestination != broadcastAddr:
         return
 
     if ethertype in upperProtos.keys():
@@ -191,7 +193,6 @@ def stopEthernetLevel()->int:
     '''
     try:
         recvThread.stop()
-        recvThread.join() #Espera a que el hilo finalice
 
         if handle is not None:
             pcap_close(handle)
@@ -227,7 +228,7 @@ def sendEthernetFrame(data:bytes,len:int,etherType:int,dstMac:bytes) -> int:
     frame = dstMac + macAddress + struct.pack('!H', etherType) + data
 
     if frameLen < ETH_FRAME_MIN:
-        frame += bytes('\0' * (ETH_FRAME_MIN - frameLen))
+        frame = frame.ljust(ETH_FRAME_MIN, b'\0')
         frameLen = ETH_FRAME_MIN
 
     try:

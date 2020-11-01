@@ -236,8 +236,8 @@ def initARP(interface:str) -> int:
     global myIP, myMAC, arpInitialized
 
     registerCallback(process_arp_frame, ethertype)
-    myIP = getIP()
-    myMAC = getHwAddr()
+    myIP = getIP(interface)
+    myMAC = getHwAddr(interface)
 
     if ARPResolution(myIP) is not None:
         return 1
