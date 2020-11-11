@@ -14,20 +14,20 @@ Criterios de evaluación:
  a medida que se iban cumpliendo cada uno de los criterios solicitados.
 
 -Recibir tramas Ethernet, realizar comprobaciones y llamar correctamente a la
- función de callback de nivel superior:
+ función de callback de nivel superior: Hecho
 
--Enviar tramas Ethernet correctamente:
+-Enviar tramas Ethernet correctamente: Hecho
 
--Enviar correctamente peticiones ARP:
+-Enviar correctamente peticiones ARP: Hecho
 
--Procesar correctametne peticiones ARP recibidas:
+-Procesar correctametne peticiones ARP recibidas: Hecho
 
--Enviar correctamente respuestas ARP:
+-Enviar correctamente respuestas ARP: Hecho
 
--Procesar correctamente respuestas ARP:
+-Procesar correctamente respuestas ARP: Hecho
 
--Manejo correcto de la cahcé ARP:
+-Manejo correcto de la cahcé ARP: Hecho
 
--Uso correcto de Locks:
+-Uso correcto de Locks: Hecho
 
--Realiza correctamente el ARP gratuito:
+-Realiza correctamente el ARP gratuito: Hecho

@@ -79,8 +79,7 @@ def printCache()->None:
     print('{:>12}\t\t{:>12}'.format('IP','MAC'))
     with cacheLock:
         for k in cache:
-            if k in cache:
-                print ('{:>12}\t\t{:>12}'.format(socket.inet_ntoa(struct.pack('!I',k)),':'.join(['{:02X}'.format(b) for b in cache[k]])))
+            print ('{:>12}\t\t{:>12}'.format(socket.inet_ntoa(struct.pack('!I',k)),':'.join(['{:02X}'.format(b) for b in cache[k]])))
 
 
 
