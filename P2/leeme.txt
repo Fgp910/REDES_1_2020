@@ -14,20 +14,30 @@ Criterios de evaluación:
  a medida que se iban cumpliendo cada uno de los criterios solicitados.
 
 -Recibir tramas Ethernet, realizar comprobaciones y llamar correctamente a la
- función de callback de nivel superior: Hecho
+ función de callback de nivel superior: Realizado: se accede al diccionario donde 
+ se registran los callbacks y se ejecuta el correspondiente en función del 
+ Ethertype.
 
--Enviar tramas Ethernet correctamente: Hecho
+-Enviar tramas Ethernet correctamente: Realizado: se añade a la carga útil una
+ cabecera de nivel de enlace apropiada y se envían.
 
--Enviar correctamente peticiones ARP: Hecho
+-Enviar correctamente peticiones ARP: Realizado: se envían los paquetes ARP Request 
+ a la dirección de broadcast.
 
--Procesar correctametne peticiones ARP recibidas: Hecho
+-Procesar correctametne peticiones ARP recibidas: Realizado: se reciben los paquetes
+ y, en caso de ser dirigidos a la IP propia, se responden.
 
--Enviar correctamente respuestas ARP: Hecho
+-Enviar correctamente respuestas ARP: Realizado: se envía el paquete ARP Reply a
+ la dirección de origen del ARP Request previo.
 
--Procesar correctamente respuestas ARP: Hecho
+-Procesar correctamente respuestas ARP: Realizado: se reciben las respuestas y se
+ muestra la MAC resuelta.
 
--Manejo correcto de la cahcé ARP: Hecho
+-Manejo correcto de la cahcé ARP: Realizado: se ha comprobado que se guardan las 
+ relaciones IP/MAC por 10 segundos y se reutilizan para evitar más peticiones ARP.
 
--Uso correcto de Locks: Hecho
+-Uso correcto de Locks: Realizado: las variables se acceden de forma segura y sin 
+ interbloqueos.
 
--Realiza correctamente el ARP gratuito: Hecho
+-Realiza correctamente el ARP gratuito: Realizado: se ha comprobado que al 
+ realizarse un ARP gratuito con una IP repetida no se inicializa el nivel ARP.
