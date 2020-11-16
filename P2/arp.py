@@ -237,7 +237,7 @@ def initARP(interface:str) -> int:
     myMAC = getHwAddr(interface)
 
     if ARPResolution(myIP) is not None:
-        return 1
+        return -1
 
     arpInitialized = True
 
