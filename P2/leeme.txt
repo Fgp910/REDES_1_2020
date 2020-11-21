@@ -3,6 +3,8 @@ Autores: Ana Calzada García, Leandro García Ortiz y Fabián Gutiérrez Peña.
 --------------------------------------------------------------------------------
 
 Comentarios:
+-Todas las comprobaciones de envío/recepción de paquetes fueron realizadas con
+ la herramienta Wireshark.
 
 --------------------------------------------------------------------------------
 
@@ -14,30 +16,31 @@ Criterios de evaluación:
  a medida que se iban cumpliendo cada uno de los criterios solicitados.
 
 -Recibir tramas Ethernet, realizar comprobaciones y llamar correctamente a la
- función de callback de nivel superior: Realizado: Se accede al diccionario donde 
- se registran los callbacks y se ejecuta el correspondiente en función del 
+ función de callback de nivel superior: Realizado: Se accede al diccionario
+ donde se registran los callbacks y se ejecuta el correspondiente en función del 
  Ethertype.
 
 -Enviar tramas Ethernet correctamente: Realizado: Se añade a la carga útil una
  cabecera de nivel de enlace apropiada y se envían.
 
--Enviar correctamente peticiones ARP: Realizado: Se envían los paquetes ARP Request 
- a la dirección de broadcast.
+-Enviar correctamente peticiones ARP: Realizado: Se envían los paquetes ARP
+ Request a la dirección de broadcast.
 
--Procesar correctametne peticiones ARP recibidas: Realizado: Se reciben los paquetes
- y, en caso de ser dirigidos a la IP propia, se responden.
+-Procesar correctametne peticiones ARP recibidas: Realizado: Se reciben los
+ paquetes y, en caso de ser dirigidos a la IP propia, se responden.
 
 -Enviar correctamente respuestas ARP: Realizado: Se envía el paquete ARP Reply a
  la dirección de origen del ARP Request previo.
 
--Procesar correctamente respuestas ARP: Realizado: Se reciben las respuestas y se
- muestra la MAC resuelta.
+-Procesar correctamente respuestas ARP: Realizado: Se reciben las respuestas y
+ se muestra la MAC resuelta.
 
--Manejo correcto de la cahcé ARP: Realizado: Se ha comprobado que se guardan las 
- relaciones IP/MAC por 10 segundos y se reutilizan para evitar más peticiones ARP.
+-Manejo correcto de la cahcé ARP: Realizado: Se ha comprobado que se guardan las
+ relaciones IP/MAC por 10 segundos y se reutilizan para evitar más peticiones
+ ARP.
 
--Uso correcto de Locks: Realizado: las variables se acceden de forma segura y sin 
- interbloqueos.
+-Uso correcto de Locks: Realizado: las variables se acceden de forma segura y
+ sin interbloqueos.
 
 -Realiza correctamente el ARP gratuito: Realizado: Se ha comprobado que al 
  realizarse un ARP gratuito con una IP repetida no se inicializa el nivel ARP.
