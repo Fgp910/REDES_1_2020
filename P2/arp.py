@@ -22,7 +22,7 @@ globalLock = Lock()
 broadcastAddr = bytes([0xFF]*6)
 #Cabecera ARP común a peticiones y respuestas. Específica para la combinación Ethernet/IP
 ARPHeader = bytes([0x00,0x01,0x08,0x00,0x06,0x04])
-#longitud (en bytes) de la cabecera común ARP
+#Longitud (en bytes) de la cabecera común ARP
 ARP_HLEN = 6
 #Ethertype ARP
 ethertype = 2054
@@ -30,6 +30,9 @@ ethertype = 2054
 #Opcode de ARP
 ARPOpcodeRequest = bytes([0x00, 0x01])
 ARPOpcodeReply = bytes([0x00, 0x02])
+
+#Bandera de inicialización del nivel ARP
+arpInitialized = False
 
 #Variable que alamacenará que dirección IP se está intentando resolver
 requestedIP = None
@@ -161,6 +164,7 @@ def processARPReply(data:bytes,MAC:bytes)->None:
         resolvedMAC = macOrigin
         with cacheLock:
             cache[requestedIP] = resolvedMAC
+
         awaitingResponse = False
         requestedIP = None
 
@@ -232,6 +236,9 @@ def initARP(interface:str) -> int:
             -Marcar la variable de nivel ARP inicializado a True
     '''
     global myIP, myMAC, arpInitialized
+
+    if arpInitialized:
+        return -1
 
     registerCallback(process_arp_frame, ethertype)
     myIP = getIP(interface)
