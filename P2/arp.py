@@ -79,7 +79,8 @@ def printCache()->None:
     print('{:>12}\t\t{:>12}'.format('IP','MAC'))
     with cacheLock:
         for k in cache:
-            print ('{:>12}\t\t{:>12}'.format(socket.inet_ntoa(struct.pack('!I',k)),':'.join(['{:02X}'.format(b) for b in cache[k]])))
+            if k in cache:
+                print ('{:>12}\t\t{:>12}'.format(socket.inet_ntoa(struct.pack('!I',k)),':'.join(['{:02X}'.format(b) for b in cache[k]])))
 
 
 
@@ -236,7 +237,7 @@ def initARP(interface:str) -> int:
     myIP = getIP(interface)
     myMAC = getHwAddr(interface)
 
-    if ARPResolution(myIP) is None:
+    if ARPResolution(myIP) is not None:
         return -1
 
     arpInitialized = True
