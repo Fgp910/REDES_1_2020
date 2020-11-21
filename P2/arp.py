@@ -116,7 +116,7 @@ def processARPRequest(data:bytes,MAC:bytes)->None:
 
     if ipDestination != myIP:
         return
-    
+
     response = createARPReply(ipOrigin, macOrigin)
     sendEthernetFrame(response, len(response), ethertype, macOrigin)
 
