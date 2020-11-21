@@ -108,12 +108,12 @@ def processARPRequest(data:bytes,MAC:bytes)->None:
     if macOrigin != MAC:
         return
 
-    ipOrigin = data[14:18]
-    ipDestination = data[24:28]
+    ipOrigin = struct.unpack('!I', data[14:18])[0]
+    ipDestination = struct.unpack('!I', data[24:28])[0]
 
     if ipDestination != myIP:
         return
-
+    
     response = createARPReply(ipOrigin, macOrigin)
     sendEthernetFrame(response, len(response), ethertype, macOrigin)
 
