@@ -10,4 +10,5 @@ mkdir RedesSharedFolder
 su redes
 git config --global user.email "leandroGO@github.com"
 git config --global user.name "leandroGO"
-
+sudo pip3 install matplotlib
+sudo pip3 install pandas
