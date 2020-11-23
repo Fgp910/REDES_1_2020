@@ -195,6 +195,9 @@ if __name__ == "__main__":
 
     #Analisis de protocolos
     #TODO: Añadir código para obtener el porcentaje de tráfico IPv4 y NO-IPv4
+    logging.info('Ejecutando tshark para obtener el porcentaje de tráfico IPv5 y NO-IPv4')
+    codigo, salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e frame.number'.format(args.tracefile))
+    nIP = 0
 
     #TODO: Añadir código para obtener el porcentaje de tráfico TPC,UDP y OTROS sobre el tráfico IP
    
