@@ -1,0 +1,14 @@
+Autores: Leandro García Ortiz y Fabián Gutiérrez Peña.
+
+--------------------------------------------------------------------------------
+
+Comentarios:
+
+--------------------------------------------------------------------------------
+
+Criterios de evaluación:
+-Normativa de entrega cumplida en su totalidad: Realizado: Se realizaron varias
+ relecturas del enunciado a lo largo de la realización de la práctica.
+
+-Fichero leeme.txt bien explicado: Realizado: Se confeccionó el presente fichero
+ a medida que se iban cumpliendo cada uno de los criterios solicitados.
