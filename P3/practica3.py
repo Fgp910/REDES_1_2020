@@ -22,6 +22,8 @@ warnings.filterwarnings("ignore")
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
 
+ETHERTYPE_IP = '0x0800'
+
 '''
     Función: calcularECDF
     Entrada: 
@@ -184,10 +186,13 @@ if __name__ == "__main__":
     #Ejemplo de ejecución de comando tshark y parseo de salida. Se parte toda la salida en líneas usando el separador \n
     logging.info('Ejecutando tshark para obtener el número de paquetes')
     codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e frame.number'.format(args.tracefile))
+    if codigo: #En caso de error
+        sys.exit(-1)
+
     nlineas = 0
     for linea in salida.split('\n'):
         if linea != '':
-            print(linea)
+            #print(linea)
             nlineas +=1
 
     print('{} paquetes en la traza {}'.format(nlineas,args.tracefile))
@@ -195,11 +200,38 @@ if __name__ == "__main__":
 
     #Analisis de protocolos
     #TODO: Añadir código para obtener el porcentaje de tráfico IPv4 y NO-IPv4
-    logging.info('Ejecutando tshark para obtener el porcentaje de tráfico IPv5 y NO-IPv4')
-    codigo, salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e frame.number'.format(args.tracefile))
+    logging.info('Ejecutando tshark para obtener el porcentaje de tráfico IPv4 y NO-IPv4')
+    codigo, salida = ejecutarComandoObtenerSalida("tshark -r {} -Y 'ip'".format(args.tracefile))
+    if codigo:
+        sys.exit(-1)
+
     nIP = 0
+    for linea in salida.split('\n'):
+        nIP += (linea != '')
+
+    print('{0:.2f}% de paquetes IPv4 ({1:.2f}% no-IPv4)'.format(100.0*nIP/nlineas, 100.0*(nlineas - nIP)/nlineas))
 
     #TODO: Añadir código para obtener el porcentaje de tráfico TPC,UDP y OTROS sobre el tráfico IP
+    logging.info('Ejecutando tshark para obtener el porcentaje de tráfico TPC,UDP y OTROS sobre el tráfico IP')
+    # Paquetes TCP
+    codigo, salida = ejecutarComandoObtenerSalida("tshark -r {} -Y 'tcp and ip'".format(args.tracefile))
+    if codigo:
+        sys.exit(-1)
+
+    nTCP = 0
+    for linea in salida.split('\n'):
+        nTCP += (linea != '')
+    # Paquetes UDP
+    codigo, salida = ejecutarComandoObtenerSalida("tshark -r {} -Y 'udp and ip'".format(args.tracefile))
+    if codigo:
+        sys.exit(-1)
+
+    nUDP = 0
+    for linea in salida.split('\n'):
+        nUDP += (linea != '')
+
+    print('{0:.2f}% de paquetes TCP, {1:.2f}% de paquetes UDP ({2:.2f}% otros)'.format(100.0*nTCP/nIP, 100.0*nUDP/nIP,
+                                                                                       100.0*(nIP - nTCP - nUDP)/nIP))
    
     #Obtención de top 5 direcciones IP
     #TODO: Añadir código para obtener los datos y generar la gráfica de top IP origen por bytes
