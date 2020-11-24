@@ -22,8 +22,6 @@ warnings.filterwarnings("ignore")
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
 
-ETHERTYPE_IP = '0x0800'
-
 '''
     Función: calcularECDF
     Entrada: 
