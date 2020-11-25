@@ -233,9 +233,11 @@ if __name__ == "__main__":
    
     #Obtención de top 5 direcciones IP
     #TODO: Añadir código para obtener los datos y generar la gráfica de top IP origen por bytes
-    
-    
-    
+    codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e ip.src -e frame.len'.format(args.tracefile))
+    if codigo: #En caso de error
+        sys.exit(-1)
+
+
     #TODO: Añadir código para obtener los datos y generar la gráfica de top IP origen por paquetes
    
 
