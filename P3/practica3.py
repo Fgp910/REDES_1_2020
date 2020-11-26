@@ -161,6 +161,72 @@ def pintarTarta(etiquetas,valores,nombre_fichero,titulo):
     plt.tight_layout()
     plt.savefig(nombre_fichero, bbox_inches='tight')
 
+
+'''
+    Función: cuentaTopBytes
+    Entrada: 
+        -salida: salida de la ejecucion de tshark
+    Salida: :
+        -x: lista con los valores x (datos de entrada)
+        -y: lista con los valores de bytes para cada valor de entrada
+    Descripción:  Esta función recibe la salida de tshark con dos columnas, siendo la segunda de bytes.
+    Devuelve el top 5 de elementos de la primea columna que mas bytes sumen.
+'''
+def cuentaTopBytes(salida):
+    count = dict()
+    for line in salida.split('\n'):
+        if line.split(' ')[0] in count:
+            count[line.split(' ')[0]] += int(line.split(' ')[1])
+        else:
+            count[line.split(' ')[0]] = int(line.split(' ')[1])
+
+    x = []
+    y = []
+    for i in range(5):
+        maxN = 0
+        for dir in count.keys():
+            if count[dir] > maxN:
+                maxN = count[dir]
+                maxDir = dir
+        x += maxDir
+        y += maxN
+        del count[maxDir]
+
+    return x, y
+
+
+'''
+    Función: cuentaTopPaquetes
+    Entrada: 
+        -salida: salida de la ejecucion de tshark
+    Salida: :
+        -x: lista con los valores x (datos de entrada)
+        -y: lista con el numero de paquetes para cada valor de entrada
+    Descripción:  Esta función recibe la salida de tshark con una columna.
+    Devuelve el top 5 de elementos de la primea columna que mas se repitan y su frecuencia.
+'''
+def cuentaTopPaquetes(salida):
+    count = dict()
+    for line in salida.split('\n'):
+        if line in count:
+            count[line] += 1
+        else:
+            count[line] = 1
+
+    x = []
+    y = []
+    for i in range(5):
+        maxN = 0
+        for dir in count.keys():
+            if count[dir] > maxN:
+                maxN = count[dir]
+                maxDir = dir
+        x += maxDir
+        y += maxN
+        del count[maxDir]
+
+    return x, y
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Programa principal que realiza el análisis de tráfico sobre una traza PCAP',
     formatter_class=RawTextHelpFormatter)
@@ -233,39 +299,127 @@ if __name__ == "__main__":
    
     #Obtención de top 5 direcciones IP
     #TODO: Añadir código para obtener los datos y generar la gráfica de top IP origen por bytes
+    logging.info('Ejecutando tshark para obtener el top direcciones Ip origen por bytes')
     codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e ip.src -e frame.len'.format(args.tracefile))
-    if codigo: #En caso de error
+    if codigo:
         sys.exit(-1)
+
+    x, y = cuentaTopBytes(salida)
+
+    pintarTarta(x, y, "topIPSrcBytes.png", "Top direcciones IP origen por numero de bytes")
 
 
     #TODO: Añadir código para obtener los datos y generar la gráfica de top IP origen por paquetes
-   
+    logging.info('Ejecutando tshark para obtener el top direcciones IP origen por paquetes')
+    codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e ip.src'.format(args.tracefile))
+    if codigo:
+        sys.exit(-1)
+
+    x, y = cuentaTopPaquetes(salida)
+
+    pintarTarta(x, y, "topIPSrcPaquetes.png", "Top direcciones IP origen por numero de paquetes")
 
     #TODO: Añadir código para obtener los datos y generar la gráfica de top IP destino por paquetes
-   
+    logging.info('Ejecutando tshark para obtener el top direcciones IP destino por paquetes')
+    codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e ip.dst'.format(args.tracefile))
+    if codigo:
+        sys.exit(-1)
+
+    x, y = cuentaTopPaquetes(salida)
+
+    pintarTarta(x, y, "topIPDestPaquetes.png", "Top direcciones IP destino por numero de paquetes")
 
     #TODO: Añadir código para obtener los datos y generar la gráfica de top IP destino por bytes
-   
+    logging.info('Ejecutando tshark para obtener el top direcciones Ip destino por bytes')
+    codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e ip.dst -e frame.len'.format(args.tracefile))
+    if codigo:
+        sys.exit(-1)
+
+    x, y = cuentaTopBytes(salida)
+
+    pintarTarta(x, y, "topIPDestBytes.png", "Top direcciones IP destino por numero de bytes")
     
     #Obtención de top 5 puertos TCP
     #TODO: Añadir código para obtener los datos y generar la gráfica de top puerto origen TCP por bytes
-   
+    logging.info('Ejecutando tshark para obtener el top puertos TCP origen por bytes')
+    codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e tcp.srcport -e frame.len'.format(args.tracefile))
+    if codigo:
+        sys.exit(-1)
+
+    x, y = cuentaTopBytes(salida)
+
+    pintarTarta(x, y, "topTCPSrcBytes.png", "Top puertos TCP origen por numero de bytes")
 
     #TODO: Añadir código para obtener los datos y generar la gráfica de top puerto destino TCP por bytes
+    logging.info('Ejecutando tshark para obtener el top puertos TCP destino por bytes')
+    codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e tcp.dstport -e frame.len'.format(args.tracefile))
+    if codigo:
+        sys.exit(-1)
+
+    x, y = cuentaTopBytes(salida)
+
+    pintarTarta(x, y, "topTCPDestBytes.png", "Top puertos TCP destino por numero de bytes")
   
     #TODO: Añadir código para obtener los datos y generar la gráfica de top puerto origen TCP por paquetes
+    logging.info('Ejecutando tshark para obtener el top puertos TCP origen por paquetes')
+    codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e tcp.srcport'.format(args.tracefile))
+    if codigo:
+        sys.exit(-1)
+
+    x, y = cuentaTopPaquetes(salida)
+
+    pintarTarta(x, y, "topTCPSrcPaquetes.png", "Top puertos TCP origen por numero de paquetes")
  
     #TODO: Añadir código para obtener los datos y generar la gráfica de top puerto destino  TCP por paquetes
- 
+    logging.info('Ejecutando tshark para obtener el top puertos TCP destino por paquetes')
+    codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e tcp.dstport'.format(args.tracefile))
+    if codigo:
+        sys.exit(-1)
+
+    x, y = cuentaTopPaquetes(salida)
+
+    pintarTarta(x, y, "topTCPDestPaquetes.png", "Top puertos TCP destino por numero de paquetes")
 
     #Obtención de top 10 puertos UDP
     #TODO: Añadir código para obtener los datos y generar la gráfica de top puerto origen UDP por bytes
- 
+    logging.info('Ejecutando tshark para obtener el top puertos UDP origen por bytes')
+    codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e udp.srcport -e frame.len'.format(args.tracefile))
+    if codigo:
+        sys.exit(-1)
+
+    x, y = cuentaTopBytes(salida)
+
+    pintarTarta(x, y, "topUDPSrcBytes.png", "Top puertos UDP origen por numero de bytes")
+
     #TODO: Añadir código para obtener los datos y generar la gráfica de top puerto destino UDP por bytes
+    logging.info('Ejecutando tshark para obtener el top puertos UDP destino por bytes')
+    codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e udp.dstport -e frame.len'.format(args.tracefile))
+    if codigo:
+        sys.exit(-1)
+
+    x, y = cuentaTopBytes(salida)
+
+    pintarTarta(x, y, "topUDPDestBytes.png", "Top puertos UDP destino por numero de bytes")
   
     #TODO: Añadir código para obtener los datos y generar la gráfica de top puerto origen UDP por paquetes
+    logging.info('Ejecutando tshark para obtener el top puertos UDP origen por paquetes')
+    codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e udp.srcport'.format(args.tracefile))
+    if codigo:
+        sys.exit(-1)
+
+    x, y = cuentaTopPaquetes(salida)
+
+    pintarTarta(x, y, "topUDPSrcPaquetes.png", "Top puertos UDP origen por numero de paquetes")
     
     #TODO: Añadir código para obtener los datos y generar la gráfica de top puerto destino UDP por paquetes
+    logging.info('Ejecutando tshark para obtener el top puertos UDP destino por paquetes')
+    codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e udp.dstport'.format(args.tracefile))
+    if codigo:
+        sys.exit(-1)
+
+    x, y = cuentaTopPaquetes(salida)
+
+    pintarTarta(x, y, "topUDPDestPaquetes.png", "Top puertos UDP destino por numero de paquetes")
     
 
     #Obtención de series temporales de ancho de banda
