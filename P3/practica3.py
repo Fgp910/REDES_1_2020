@@ -184,6 +184,7 @@ def cuentaTopBytes(salida):
     y = []
     for i in range(5):
         maxN = 0
+        maxDir = 0
         for dir in count.keys():
             if count[dir] > maxN:
                 maxN = count[dir]
@@ -217,6 +218,7 @@ def cuentaTopPaquetes(salida):
     y = []
     for i in range(5):
         maxN = 0
+        maxDir = 0
         for dir in count.keys():
             if count[dir] > maxN:
                 maxN = count[dir]
@@ -424,9 +426,49 @@ if __name__ == "__main__":
 
     #Obtención de series temporales de ancho de banda
     #TODO: Añadir código para obtener los datos y generar la gráfica de la serie temporal de ancho de banda con MAC como origen
-    
+    logging.info('Ejecutando tshark para obtener la serie temporal de ancho de banda con MAC como origen')
+    codigo,salida = ejecutarComandoObtenerSalida("tshark -r {} -T fields -e frame.time_epoch -e frame.len -Y 'eth.src eq {}'".format(args.tracefile, args.mac))
+    if codigo:
+        sys.exit(-1)
+
+    count = dict()
+    for line in salida.split('\n'):
+        elems = line.split(' ')
+        if int(elems[0]) in count:
+            count[int(elems[0])] += int(elems[1])*8
+        else:
+            count[int(elems[0])] = int(elems[1])*8
+
+    count.sort()
+    for i in range(count.keys()[0], count.keys()[-1]+1):
+        if i not in count:
+            count[i] = 0
+    count.sort()
+
+    pintarSerieTemporal(count.keys(), count.values(), "anchoBandaMACSrc.png", "Ancho de banda con MAC como origen", "Tiempo epoch(s)", "Ancho de banda (b/s)")
+
     #TODO: Añadir código para obtener los datos y generar la gráfica de la serie temporal de ancho de banda con MAC como destino
-   
+    logging.info('Ejecutando tshark para obtener la serie temporal de ancho de banda con MAC como destino')
+    codigo,salida = ejecutarComandoObtenerSalida("tshark -r {} -T fields -e frame.time_epoch -e frame.len -Y 'eth.dst eq {}'".format(args.tracefile, args.mac))
+    if codigo:
+        sys.exit(-1)
+
+    count = dict()
+    for line in salida.split('\n'):
+        elems = line.split(' ')
+        if int(elems[0]) in count:
+            count[int(elems[0])] += int(elems[1])*8
+        else:
+            count[int(elems[0])] = int(elems[1])*8
+
+    count.sort()
+    for i in range(count.keys()[0], count.keys()[-1]+1):
+        if i not in count:
+            count[i] = 0
+    count.sort()
+
+    pintarSerieTemporal(count.keys(), count.values(), "anchoBandaMACSrc.png", "Ancho de banda con MAC como origen", "Tiempo epoch(s)", "Ancho de banda (b/s)")
+
     #Obtención de las ECDF de tamaño de los paquetes
     #TODO: Añadir código para obtener los datos y generar la gráfica de la ECDF de los tamaños de los paquetes a nivel 2
    
