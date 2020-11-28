@@ -173,10 +173,10 @@ def cuentaTopBytes(salida):
     count = dict()
     for line in salida.split('\n'):
         if line != '':
-            if line.split(' ')[0] in count:
-                count[line.split(' ')[0]] += int(line.split(' ')[1])
+            if line.split('\t')[0] in count:
+                count[line.split('\t')[0]] += int(line.split('\t')[1])
             else:
-                count[line.split(' ')[0]] = int(line.split(' ')[1])
+                count[line.split('\t')[0]] = int(line.split('\t')[1])
 
     top = dict()
     for i in range(5):
@@ -429,17 +429,16 @@ if __name__ == "__main__":
 
     count = dict()
     for line in salida.split('\n'):
-        elems = line.split(' ')
-        if int(elems[0]) in count:
-            count[int(elems[0])] += int(elems[1])*8
-        else:
-            count[int(elems[0])] = int(elems[1])*8
+        if line != '':
+            elems = line.split('\t')  
+            if int(elems[0]) in count:
+                count[int(elems[0])] += int(elems[1])*8
+            else:
+                count[int(elems[0])] = int(elems[1])*8
 
-    count.sort()
-    for i in range(count.keys()[0], count.keys()[-1] + 1):
+    for i in range(min(count.keys()), max(count.keys()) + 1):
         if i not in count:
             count[i] = 0
-    count.sort()
 
     pintarSerieTemporal(count.keys(), count.values(), "anchoBandaMACSrc.png", "Ancho de banda con MAC como origen", "Tiempo epoch(s)", "Ancho de banda (b/s)")
 
@@ -451,17 +450,15 @@ if __name__ == "__main__":
 
     count = dict()
     for line in salida.split('\n'):
-        elems = line.split(' ')
+        elems = line.split('\t')
         if int(elems[0]) in count:
             count[int(elems[0])] += int(elems[1])*8
         else:
             count[int(elems[0])] = int(elems[1])*8
 
-    count.sort()
-    for i in range(count.keys()[0], count.keys()[-1] + 1):
+    for i in range(min(count.keys()), max(count.keys()) + 1):
         if i not in count:
             count[i] = 0
-    count.sort()
 
     pintarSerieTemporal(count.keys(), count.values(), "anchoBandaMACSrc.png", "Ancho de banda con MAC como origen", "Tiempo epoch(s)", "Ancho de banda (b/s)")
 
