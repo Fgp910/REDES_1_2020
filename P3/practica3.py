@@ -21,6 +21,7 @@ import warnings
 warnings.filterwarnings("ignore")
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
+import math
 
 '''
     Función: calcularECDF
@@ -431,16 +432,16 @@ if __name__ == "__main__":
     for line in salida.split('\n'):
         if line != '':
             elems = line.split('\t')  
-            if int(elems[0]) in count:
-                count[int(elems[0])] += int(elems[1])*8
+            if math.floor(float(elems[0])) in count:
+                count[math.floor(float(elems[0]))] += int(elems[1])*8
             else:
-                count[int(elems[0])] = int(elems[1])*8
+                count[math.floor(float(elems[0]))] = int(elems[1])*8
 
     for i in range(min(count.keys()), max(count.keys()) + 1):
         if i not in count:
             count[i] = 0
 
-    pintarSerieTemporal(count.keys(), count.values(), "anchoBandaMACSrc.png", "Ancho de banda con MAC como origen", "Tiempo epoch(s)", "Ancho de banda (b/s)")
+    #pintarSerieTemporal(count.keys(), count.values(), "anchoBandaMACSrc.png", "Ancho de banda con MAC como origen", "Tiempo epoch(s)", "Ancho de banda (b/s)")
 
     #TODO: Añadir código para obtener los datos y generar la gráfica de la serie temporal de ancho de banda con MAC como destino
     logging.info('Ejecutando tshark para obtener la serie temporal de ancho de banda con MAC como destino')
@@ -450,17 +451,18 @@ if __name__ == "__main__":
 
     count = dict()
     for line in salida.split('\n'):
-        elems = line.split('\t')
-        if int(elems[0]) in count:
-            count[int(elems[0])] += int(elems[1])*8
-        else:
-            count[int(elems[0])] = int(elems[1])*8
+        if line != '':
+            elems = line.split('\t')
+            if math.floor(float(elems[0])) in count:
+                count[math.floor(float(elems[0]))] += int(elems[1])*8
+            else:
+                count[math.floor(float(elems[0]))] = int(elems[1])*8
 
     for i in range(min(count.keys()), max(count.keys()) + 1):
         if i not in count:
             count[i] = 0
 
-    pintarSerieTemporal(count.keys(), count.values(), "anchoBandaMACSrc.png", "Ancho de banda con MAC como origen", "Tiempo epoch(s)", "Ancho de banda (b/s)")
+    #pintarSerieTemporal(count.keys(), count.values(), "anchoBandaMACSrc.png", "Ancho de banda con MAC como origen", "Tiempo epoch(s)", "Ancho de banda (b/s)")
 
     #Obtención de las ECDF de tamaño de los paquetes
     #TODO: Añadir código para obtener los datos y generar la gráfica de la ECDF de los tamaños de los paquetes a nivel 2
@@ -471,7 +473,8 @@ if __name__ == "__main__":
 
     tamanos = []
     for line in salida.split('\n'):
-        tamanos += int(line)
+        if line != '':
+            tamanos.append(int(line))
 
     pintarECDF(tamanos, "ECDFMACSrc.png", "Tamaño de paquetes a nivel 2 con MAC como origen", "Tamaño (B)", "P{x<X}")
     
@@ -481,30 +484,33 @@ if __name__ == "__main__":
 
     tamanos = []
     for line in salida.split('\n'):
-        tamanos += int(line)
+        if line != '':
+            tamanos.append(int(line))
 
     pintarECDF(tamanos, "ECDFMACDest.png", "Tamaño de paquetes a nivel 2 con MAC como destino", "Tamaño (B)", "P{x<X}")
     
     #Obtención de las ECDF de tamaño de los tiempos entre llegadas
     #TODO: Añadir código para obtener los datos y generar la gráfica de la ECDF de los tiempos entre llegadas para el flujo TCP
     logging.info('Ejecutando tshark para obtener la ECDF del flujo TCP')
-    codigo,salida = ejecutarComandoObtenerSalida("tshark -r {} -T fields -e frame.time_delta -Y 'tcp.src eq {}'".format(args.tracefile, args.ip_flujo_tcp))
+    codigo,salida = ejecutarComandoObtenerSalida("tshark -r {} -T fields -e frame.time_delta -Y 'tcp.srcport eq {}'".format(args.tracefile, args.ip_flujo_tcp))
     if codigo:
         sys.exit(-1)
 
     tiempos = []
     for line in salida.split('\n'):
-        tiempos += int(line)
+        if line != '':
+            tiempos.append(int(line))
 
     pintarECDF(tiempos, "ECDFdeltaTCP.png", "Tiempo entre paquetes para flujo TCP", "Tiempo (s)", "P{x<X}")
     #TODO: Añadir código para obtener los datos y generar la gráfica de la ECDF de los tiempos entre llegadas para el flujo UDP
     logging.info('Ejecutando tshark para obtener la ECDF del flujo UDP')
-    codigo,salida = ejecutarComandoObtenerSalida("tshark -r {} -T fields -e frame.time_delta -Y 'udp.src eq {}'".format(args.tracefile, args.port_flujo_udp))
+    codigo,salida = ejecutarComandoObtenerSalida("tshark -r {} -T fields -e frame.time_delta -Y 'udp.srcport eq {}'".format(args.tracefile, args.port_flujo_udp))
     if codigo:
         sys.exit(-1)
 
     tiempos = []
     for line in salida.split('\n'):
-        tiempos += int(line)
+        if line != '':
+            tiempos.append(int(line))
 
     pintarECDF(tiempos, "ECDFdeltaUDP.png", "Tiempo entre paquetes para flujo UDP", "Tiempo (s)", "P{x<X}")
