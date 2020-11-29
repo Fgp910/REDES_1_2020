@@ -329,7 +329,7 @@ if __name__ == "__main__":
     pintarTarta(top.keys(), top.values(), "topIPDestPaquetes.png", "Top direcciones IP destino por numero de paquetes")
 
     #TODO: Añadir código para obtener los datos y generar la gráfica de top IP destino por bytes
-    logging.info('Ejecutando tshark para obtener el top direcciones Ip destino por bytes')
+    logging.info('Ejecutando tshark para obtener el top direcciones IP destino por bytes')
     codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e ip.dst -e frame.len'.format(args.tracefile))
     if codigo:
         sys.exit(-1)
@@ -492,7 +492,7 @@ if __name__ == "__main__":
     #Obtención de las ECDF de tamaño de los tiempos entre llegadas
     #TODO: Añadir código para obtener los datos y generar la gráfica de la ECDF de los tiempos entre llegadas para el flujo TCP
     logging.info('Ejecutando tshark para obtener la ECDF del flujo TCP')
-    codigo,salida = ejecutarComandoObtenerSalida("tshark -r {} -T fields -e frame.time_delta -Y 'tcp.srcport eq {}'".format(args.tracefile, args.ip_flujo_tcp))
+    codigo,salida = ejecutarComandoObtenerSalida("tshark -r {0} -T fields -e frame.time_delta -Y 'ip.src eq {1} or ip.dst eq {1}'".format(args.tracefile, args.ip_flujo_tcp))
     if codigo:
         sys.exit(-1)
 
@@ -504,7 +504,7 @@ if __name__ == "__main__":
     pintarECDF(tiempos, "ECDFdeltaTCP.png", "Tiempo entre paquetes para flujo TCP", "Tiempo (s)", "P{x<X}")
     #TODO: Añadir código para obtener los datos y generar la gráfica de la ECDF de los tiempos entre llegadas para el flujo UDP
     logging.info('Ejecutando tshark para obtener la ECDF del flujo UDP')
-    codigo,salida = ejecutarComandoObtenerSalida("tshark -r {} -T fields -e frame.time_delta -Y 'udp.srcport eq {}'".format(args.tracefile, args.port_flujo_udp))
+    codigo,salida = ejecutarComandoObtenerSalida("tshark -r {0} -T fields -e frame.time_delta -Y 'udp.srcport eq {1} or udp.dstport eq {1}'".format(args.tracefile, args.port_flujo_udp))
     if codigo:
         sys.exit(-1)
 
