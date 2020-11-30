@@ -161,6 +161,31 @@ def pintarTarta(etiquetas,valores,nombre_fichero,titulo):
 
 
 '''
+    Función: topDict
+    Entrada:
+        -dictionary: el diccionario de valores enteros sobre el que obtener el top.
+        -N: el número de posiciones del top.
+    Salida: :
+        -top: diccionario con los N primeros pares de dictionary
+
+    Descripción: Devuelve las primeras N entradas de un diccionario con valores
+    enteros. La comparación se hace por valores, siendo los primeros los mayores.
+'''
+def topDict(dictionary, N):
+    top = dict()
+    for i in range(N):
+        maxN = 0
+        maxDir = 0
+        for key in dictionary.keys():
+            if dictionary[key] > maxN:
+                maxN = dictionary[key]
+                maxDir = key
+        top[maxDir] = maxN
+        del dictionary[maxDir]
+
+    return top
+
+'''
     Función: cuentaTopBytes
     Entrada: 
         -salida: salida de la ejecucion de tshark
@@ -174,31 +199,21 @@ def cuentaTopBytes(salida):
     count = dict()
     for line in salida.split('\n'):
         if line != '':
-            if line.split('\t')[0] in count:
-                count[line.split('\t')[0]] += int(line.split('\t')[1])
-            else:
-                count[line.split('\t')[0]] = int(line.split('\t')[1])
+            split = line.split('\t')
+            if split[0] != '':
+                if split[0] in count:
+                    count[split[0]] += int(split[1])
+                else:
+                    count[split[0]] = int(split[1])
 
-    top = dict()
-    for i in range(5):
-        maxN = 0
-        maxDir = 0
-        for dir in count.keys():
-            if count[dir] > maxN:
-                maxN = count[dir]
-                maxDir = dir
-        top[maxDir] = maxN
-        del count[maxDir]
-
-    return top
-
+    return topDict(count, 5)
 
 '''
     Función: cuentaTopPaquetes
     Entrada: 
         -salida: salida de la ejecucion de tshark
     Salida: :
-        -top: diccionario con los pares (dir, numBytes) obtenidos
+        -top: diccionario con los pares (dir, numPacks) obtenidos
 
     Descripción:  Esta función recibe la salida de tshark con una columna.
     Devuelve el top 5 de elementos de la primea columna que mas se repitan y su frecuencia.
@@ -207,23 +222,14 @@ def cuentaTopPaquetes(salida):
     count = dict()
     for line in salida.split('\n'):
         if line != '':
-            if line in count:
-                count[line] += 1
-            else:
-                count[line] = 1
+            split = line.split('\t')
+            if split[0] != '':
+                if split[0] in count:
+                    count[split[0]] += 1
+                else:
+                    count[split[0]] = 1
 
-    top = dict()
-    for i in range(5):
-        maxN = 0
-        maxDir = 0
-        for dir in count.keys():
-            if count[dir] > maxN:
-                maxN = count[dir]
-                maxDir = dir
-        top[maxDir] = maxN
-        del count[maxDir]
-
-    return top
+    return topDict(count, 5)
 
 
 if __name__ == "__main__":
