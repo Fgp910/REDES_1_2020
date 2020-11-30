@@ -283,7 +283,7 @@ if __name__ == "__main__":
     #TODO: Añadir código para obtener el porcentaje de tráfico TPC,UDP y OTROS sobre el tráfico IP
     logging.info('Ejecutando tshark para obtener el porcentaje de tráfico TPC,UDP y OTROS sobre el tráfico IP')
     # Paquetes TCP
-    codigo, salida = ejecutarComandoObtenerSalida("tshark -r {} -Y 'tcp and ip'".format(args.tracefile))
+    codigo, salida = ejecutarComandoObtenerSalida("tshark -r {} -Y 'tcp and ip and (not icmp)'".format(args.tracefile))
     if codigo:
         sys.exit(-1)
 
@@ -291,7 +291,7 @@ if __name__ == "__main__":
     for linea in salida.split('\n'):
         nTCP += (linea != '')
     # Paquetes UDP
-    codigo, salida = ejecutarComandoObtenerSalida("tshark -r {} -Y 'udp and ip'".format(args.tracefile))
+    codigo, salida = ejecutarComandoObtenerSalida("tshark -r {} -Y 'udp and ip and (not icmp)'".format(args.tracefile))
     if codigo:
         sys.exit(-1)
 
