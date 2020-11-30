@@ -1,10 +1,9 @@
-Generando traza (traza.pcap) para la pareja 8 del grupo 1302. (id=130208)
-Epoch de inicio: 1606130646
+Generando traza (traza.pcap) para la pareja 7 del grupo 1302. (id=130207)
+Epoch de inicio: 1606739334
 
 Información útil para el estudiante:
-La dirección MAC que deberá tener en cuenta es: 00:11:88:CC:33:C4
-La dirección IP (origen o destino) del flujo TCP que deberá tener en cuenta es:
-98.252.67.82
-El puerto (origen o destino) del flujo UDP que deberá tener en cuenta es: 64136
+La dirección MAC que deberá tener en cuenta es: 00:11:88:CC:33:FC
+La dirección IP (origen o destino) del flujo TCP que deberá tener en cuenta es: 53.59.245.211
+El puerto (origen o destino) del flujo UDP que deberá tener en cuenta es: 1944
 
 PCAP generado con éxito!
