@@ -38,7 +38,7 @@ def calcularECDF(datos):
     n = len (datos)
     y = [(i-1)/n for i in range(1,n+1)]
 
-    return datos,y
+    return datos, y
 
 
 
@@ -59,7 +59,6 @@ def ejecutarComandoObtenerSalida(comando):
     proceso = subprocess.Popen(shlex.split(comando), stdout=subprocess.PIPE)
     salida_retorno = ''
     while True:
-        
         salida_parcial = proceso.stdout.readline()
         if salida_parcial.decode() == '' and proceso.poll() is not None:
             break
@@ -84,10 +83,9 @@ def ejecutarComandoObtenerSalida(comando):
     Descripción: Esta función pinta una gráfica ECDF para unos datos de entrada y la guarda en una imagen
 '''
 def pintarECDF(datos,nombre_fichero,titulo,titulo_x,titulo_y):
-    
     x, y = calcularECDF(datos)
     x.append(x[-1])
-    y.append(1) 
+    y.append(1)
     fig1, ax1 = plt.subplots()
     plt.step(x, y, '-')
     _ = plt.xticks(rotation=45)
@@ -187,12 +185,12 @@ def topDict(dictionary, N):
 
 '''
     Función: cuentaTopBytes
-    Entrada: 
+    Entrada:
         -salida: salida de la ejecucion de tshark
-    Salida: :
+    Salida:
         -top: diccionario con los pares (dir, numBytes) obtenidos
 
-    Descripción:  Esta función recibe la salida de tshark con dos columnas, siendo la segunda de bytes.
+    Descripción: Esta función recibe la salida de tshark con dos columnas, siendo la segunda de bytes.
     Devuelve el top 5 de elementos de la primea columna que mas bytes sumen.
 '''
 def cuentaTopBytes(salida):
@@ -210,12 +208,12 @@ def cuentaTopBytes(salida):
 
 '''
     Función: cuentaTopPaquetes
-    Entrada: 
+    Entrada:
         -salida: salida de la ejecucion de tshark
-    Salida: :
+    Salida:
         -top: diccionario con los pares (dir, numPacks) obtenidos
 
-    Descripción:  Esta función recibe la salida de tshark con una columna.
+    Descripción: Esta función recibe la salida de tshark con una columna.
     Devuelve el top 5 de elementos de la primea columna que mas se repitan y su frecuencia.
 '''
 def cuentaTopPaquetes(salida):
@@ -230,6 +228,33 @@ def cuentaTopPaquetes(salida):
                     count[split[0]] = 1
 
     return topDict(count, 5)
+
+'''
+    Función: tsharkToSerie
+    Entrada:
+        -salida: salida de la ejecución de tshark
+    Salida:
+        -top: diccionario con los pares (segundo, bits)
+
+    Descripción: Esta función recibe la salida de tshark (columnas epoch y bytes).
+    Devuelve para cada segundo el número de bits transmitidos (i.e. el ancho de
+    banda).
+'''
+def tsharkToSerie(salida):
+    data = dict()
+    for line in salida.split('\n'):
+        if line != '':
+            elems = line.split('\t')
+            if math.floor(float(elems[0])) in data:
+                data[math.floor(float(elems[0]))] += int(elems[1])*8
+            else:
+                data[math.floor(float(elems[0]))] = int(elems[1])*8
+
+    for i in range(min(data.keys()), max(data.keys()) + 1):
+        if i not in data:
+            data[i] = 0
+
+    return data
 
 
 if __name__ == "__main__":
@@ -434,20 +459,13 @@ if __name__ == "__main__":
     if codigo:
         sys.exit(-1)
 
-    count = dict()
-    for line in salida.split('\n'):
-        if line != '':
-            elems = line.split('\t')  
-            if math.floor(float(elems[0])) in count:
-                count[math.floor(float(elems[0]))] += int(elems[1])*8
-            else:
-                count[math.floor(float(elems[0]))] = int(elems[1])*8
-
-    for i in range(min(count.keys()), max(count.keys()) + 1):
-        if i not in count:
-            count[i] = 0
-
-    #pintarSerieTemporal(count.keys(), count.values(), "anchoBandaMACSrc.png", "Ancho de banda con MAC como origen", "Tiempo epoch(s)", "Ancho de banda (b/s)")
+    serie = tsharkToSerie(salida)
+    pintarSerieTemporal(serie.keys(),
+                        serie.values(),
+                        "anchoBandaMACSrc.png",
+                        "Ancho de banda con MAC como origen",
+                        "Tiempo epoch (s)",
+                        "Ancho de banda (b/s)")
 
     #TODO: Añadir código para obtener los datos y generar la gráfica de la serie temporal de ancho de banda con MAC como destino
     logging.info('Ejecutando tshark para obtener la serie temporal de ancho de banda con MAC como destino')
@@ -455,20 +473,13 @@ if __name__ == "__main__":
     if codigo:
         sys.exit(-1)
 
-    count = dict()
-    for line in salida.split('\n'):
-        if line != '':
-            elems = line.split('\t')
-            if math.floor(float(elems[0])) in count:
-                count[math.floor(float(elems[0]))] += int(elems[1])*8
-            else:
-                count[math.floor(float(elems[0]))] = int(elems[1])*8
-
-    for i in range(min(count.keys()), max(count.keys()) + 1):
-        if i not in count:
-            count[i] = 0
-
-    #pintarSerieTemporal(count.keys(), count.values(), "anchoBandaMACSrc.png", "Ancho de banda con MAC como origen", "Tiempo epoch(s)", "Ancho de banda (b/s)")
+    serie = tsharkToSerie(salida)
+    pintarSerieTemporal(serie.keys(),
+                        serie.values(),
+                        "anchoBandaMACDst.png",
+                        "Ancho de banda con MAC como destino",
+                        "Tiempo epoch (s)",
+                        "Ancho de banda (b/s)")
 
     #Obtención de las ECDF de tamaño de los paquetes
     #TODO: Añadir código para obtener los datos y generar la gráfica de la ECDF de los tamaños de los paquetes a nivel 2
@@ -483,7 +494,7 @@ if __name__ == "__main__":
             tamanos.append(int(line))
 
     pintarECDF(tamanos, "ECDFMACSrc.png", "Tamaño de paquetes a nivel 2 con MAC como origen", "Tamaño (B)", "P{x<X}")
-    
+
     codigo,salida = ejecutarComandoObtenerSalida("tshark -r {} -T fields -e frame.len -Y 'eth.dst eq {}'".format(args.tracefile, args.mac))
     if codigo:
         sys.exit(-1)
@@ -494,7 +505,7 @@ if __name__ == "__main__":
             tamanos.append(int(line))
 
     pintarECDF(tamanos, "ECDFMACDest.png", "Tamaño de paquetes a nivel 2 con MAC como destino", "Tamaño (B)", "P{x<X}")
-    
+
     #Obtención de las ECDF de tamaño de los tiempos entre llegadas
     #TODO: Añadir código para obtener los datos y generar la gráfica de la ECDF de los tiempos entre llegadas para el flujo TCP
     logging.info('Ejecutando tshark para obtener la ECDF del flujo TCP')
