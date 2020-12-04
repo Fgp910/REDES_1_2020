@@ -245,10 +245,11 @@ def tsharkToSerie(salida):
     for line in salida.split('\n'):
         if line != '':
             elems = line.split('\t')
-            if math.floor(float(elems[0])) in data:
-                data[math.floor(float(elems[0]))] += int(elems[1])*8
+            sec = math.floor(float(elems[0]))]
+            if sec in data:
+                data[sec] += int(elems[1])*8
             else:
-                data[math.floor(float(elems[0]))] = int(elems[1])*8
+                data[sec] = int(elems[1])*8
 
     for i in range(min(data.keys()), max(data.keys()) + 1):
         if i not in data:
