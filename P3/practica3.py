@@ -461,8 +461,8 @@ if __name__ == "__main__":
         sys.exit(-1)
 
     serie = tsharkToSerie(salida)
-    pintarSerieTemporal(serie.keys(),
-                        serie.values(),
+    pintarSerieTemporal(list(serie.keys()),
+                        list(serie.values()),
                         "anchoBandaMACSrc.png",
                         "Ancho de banda con MAC como origen",
                         "Tiempo epoch (s)",
@@ -475,8 +475,8 @@ if __name__ == "__main__":
         sys.exit(-1)
 
     serie = tsharkToSerie(salida)
-    pintarSerieTemporal(serie.keys(),
-                        serie.values(),
+    pintarSerieTemporal(list(serie.keys()),
+                        list(serie.values()),
                         "anchoBandaMACDst.png",
                         "Ancho de banda con MAC como destino",
                         "Tiempo epoch (s)",
