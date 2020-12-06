@@ -245,7 +245,7 @@ def tsharkToSerie(salida):
     for line in salida.split('\n'):
         if line != '':
             elems = line.split('\t')
-            sec = math.floor(float(elems[0]))]
+            sec = math.floor(float(elems[0]))
             if sec in data:
                 data[sec] += int(elems[1])*8
             else:
