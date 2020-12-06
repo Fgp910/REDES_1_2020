@@ -242,18 +242,18 @@ def cuentaTopPaquetes(salida):
 '''
 def tsharkToSerie(salida):
     data = dict()
+    count = 0
     for line in salida.split('\n'):
         if line != '':
             elems = line.split('\t')
             sec = math.floor(float(elems[0]))
+            if count == 0:
+                count = sec
+            while count < sec:
+                count += 1
+                data[count] = 0
             if sec in data:
                 data[sec] += int(elems[1])*8
-            else:
-                data[sec] = int(elems[1])*8
-
-    for i in range(min(data.keys()), max(data.keys()) + 1):
-        if i not in data:
-            data[i] = 0
 
     return data
 
