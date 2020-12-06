@@ -517,7 +517,7 @@ if __name__ == "__main__":
     tiempos = []
     for line in salida.split('\n'):
         if line != '':
-            tiempos.append(int(line))
+            tiempos.append(float(line)) #revisar
 
     pintarECDF(tiempos, "ECDFdeltaTCP.png", "Tiempo entre paquetes para flujo TCP", "Tiempo (s)", "P{x<X}")
     #TODO: Añadir código para obtener los datos y generar la gráfica de la ECDF de los tiempos entre llegadas para el flujo UDP
@@ -529,6 +529,6 @@ if __name__ == "__main__":
     tiempos = []
     for line in salida.split('\n'):
         if line != '':
-            tiempos.append(int(line))
+            tiempos.append(float(line)) #revisar
 
     pintarECDF(tiempos, "ECDFdeltaUDP.png", "Tiempo entre paquetes para flujo UDP", "Tiempo (s)", "P{x<X}")
