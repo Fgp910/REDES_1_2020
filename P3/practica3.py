@@ -510,7 +510,7 @@ if __name__ == "__main__":
     #Obtención de las ECDF de tamaño de los tiempos entre llegadas
     #TODO: Añadir código para obtener los datos y generar la gráfica de la ECDF de los tiempos entre llegadas para el flujo TCP
     logging.info('Ejecutando tshark para obtener la ECDF del flujo TCP')
-    codigo,salida = ejecutarComandoObtenerSalida("tshark -r {0} -T fields -e frame.time_delta -Y 'ip.src eq {1} or ip.dst eq {1}'".format(args.tracefile, args.ip_flujo_tcp))
+    codigo,salida = ejecutarComandoObtenerSalida("tshark -r {0} -T fields -e frame.time_delta -Y 'ip.addr eq {1}'".format(args.tracefile, args.ip_flujo_tcp))
     if codigo:
         sys.exit(-1)
 
