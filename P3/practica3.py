@@ -330,126 +330,83 @@ if __name__ == "__main__":
 
     #Obtención de top 5 direcciones IP
     #TODO: Añadir código para obtener los datos y generar la gráfica de top IP origen por bytes
-    logging.info('Ejecutando tshark para obtener el top direcciones IP origen por bytes')
-    codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e ip.src -e frame.len'.format(args.tracefile))
+    logging.info('Ejecutando tshark para obtener el top direcciones IP origen (bytes y paquetes)')
+    codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e ip.src -e frame.len -Y ip'.format(args.tracefile))
     if codigo:
         sys.exit(-1)
 
     top = cuentaTopBytes(salida)
-
     pintarTarta(top.keys(), top.values(), "topIPSrcBytes.png", "Top direcciones IP origen por numero de bytes")
 
-
     #TODO: Añadir código para obtener los datos y generar la gráfica de top IP origen por paquetes
-    logging.info('Ejecutando tshark para obtener el top direcciones IP origen por paquetes')
-    codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e ip.src'.format(args.tracefile))
-    if codigo:
-        sys.exit(-1)
-
     top = cuentaTopPaquetes(salida)
-
     pintarTarta(top.keys(), top.values(), "topIPSrcPaquetes.png", "Top direcciones IP origen por numero de paquetes")
 
     #TODO: Añadir código para obtener los datos y generar la gráfica de top IP destino por paquetes
-    logging.info('Ejecutando tshark para obtener el top direcciones IP destino por paquetes')
-    codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e ip.dst'.format(args.tracefile))
+    logging.info('Ejecutando tshark para obtener el top direcciones IP destino (bytes y paquetes)')
+    codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e ip.dst -e frame.len -Y ip'.format(args.tracefile))
     if codigo:
         sys.exit(-1)
 
     top = cuentaTopPaquetes(salida)
-
     pintarTarta(top.keys(), top.values(), "topIPDestPaquetes.png", "Top direcciones IP destino por numero de paquetes")
 
     #TODO: Añadir código para obtener los datos y generar la gráfica de top IP destino por bytes
-    logging.info('Ejecutando tshark para obtener el top direcciones IP destino por bytes')
-    codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e ip.dst -e frame.len'.format(args.tracefile))
-    if codigo:
-        sys.exit(-1)
-
     top = cuentaTopBytes(salida)
-
     pintarTarta(top.keys(), top.values(), "topIPDestBytes.png", "Top direcciones IP destino por numero de bytes")
 
     #Obtención de top 5 puertos TCP
     #TODO: Añadir código para obtener los datos y generar la gráfica de top puerto origen TCP por bytes
-    logging.info('Ejecutando tshark para obtener el top puertos TCP origen por bytes')
-    codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e tcp.srcport -e frame.len'.format(args.tracefile))
+    logging.info('Ejecutando tshark para obtener el top puertos TCP origen (bytes y paquetes)')
+    codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e tcp.srcport -e frame.len -Y "tcp and (not icmp)"'.format(args.tracefile))
     if codigo:
         sys.exit(-1)
 
     top = cuentaTopBytes(salida)
-
     pintarTarta(top.keys(), top.values(), "topTCPSrcBytes.png", "Top puertos TCP origen por numero de bytes")
 
-    #TODO: Añadir código para obtener los datos y generar la gráfica de top puerto destino TCP por bytes
-    logging.info('Ejecutando tshark para obtener el top puertos TCP destino por bytes')
-    codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e tcp.dstport -e frame.len'.format(args.tracefile))
-    if codigo:
-        sys.exit(-1)
-
-    top = cuentaTopBytes(salida)
-
-    pintarTarta(top.keys(), top.values(), "topTCPDestBytes.png", "Top puertos TCP destino por numero de bytes")
-
     #TODO: Añadir código para obtener los datos y generar la gráfica de top puerto origen TCP por paquetes
-    logging.info('Ejecutando tshark para obtener el top puertos TCP origen por paquetes')
-    codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e tcp.srcport'.format(args.tracefile))
-    if codigo:
-        sys.exit(-1)
-
     top = cuentaTopPaquetes(salida)
-
     pintarTarta(top.keys(), top.values(), "topTCPSrcPaquetes.png", "Top puertos TCP origen por numero de paquetes")
 
-    #TODO: Añadir código para obtener los datos y generar la gráfica de top puerto destino  TCP por paquetes
-    logging.info('Ejecutando tshark para obtener el top puertos TCP destino por paquetes')
-    codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e tcp.dstport'.format(args.tracefile))
+    #TODO: Añadir código para obtener los datos y generar la gráfica de top puerto destino TCP por bytes
+    logging.info('Ejecutando tshark para obtener el top puertos TCP destino (bytes y paquetes)')
+    codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e tcp.dstport -e frame.len -Y "tcp and (not icmp)"'.format(args.tracefile))
     if codigo:
         sys.exit(-1)
 
-    top = cuentaTopPaquetes(salida)
+    top = cuentaTopBytes(salida)
+    pintarTarta(top.keys(), top.values(), "topTCPDestBytes.png", "Top puertos TCP destino por numero de bytes")
 
+    #TODO: Añadir código para obtener los datos y generar la gráfica de top puerto destino  TCP por paquetes
+    top = cuentaTopPaquetes(salida)
     pintarTarta(top.keys(), top.values(), "topTCPDestPaquetes.png", "Top puertos TCP destino por numero de paquetes")
 
-    #Obtención de top 10 puertos UDP
+    #Obtención de top 5 puertos UDP
     #TODO: Añadir código para obtener los datos y generar la gráfica de top puerto origen UDP por bytes
-    logging.info('Ejecutando tshark para obtener el top puertos UDP origen por bytes')
-    codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e udp.srcport -e frame.len'.format(args.tracefile))
+    logging.info('Ejecutando tshark para obtener el top puertos UDP origen (bytes y paquetes)')
+    codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e udp.srcport -e frame.len -Y "udp and (not icmp)"'.format(args.tracefile))
     if codigo:
         sys.exit(-1)
 
     top = cuentaTopBytes(salida)
-
     pintarTarta(top.keys(), top.values(), "topUDPSrcBytes.png", "Top puertos UDP origen por numero de bytes")
 
+    #TODO: Añadir código para obtener los datos y generar la gráfica de top puerto origen UDP por paquetes
+    top = cuentaTopPaquetes(salida)
+    pintarTarta(top.keys(), top.values(), "topUDPSrcPaquetes.png", "Top puertos UDP origen por numero de paquetes")
+
     #TODO: Añadir código para obtener los datos y generar la gráfica de top puerto destino UDP por bytes
-    logging.info('Ejecutando tshark para obtener el top puertos UDP destino por bytes')
-    codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e udp.dstport -e frame.len'.format(args.tracefile))
+    logging.info('Ejecutando tshark para obtener el top puertos UDP destino (bytes y paquetes)')
+    codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e udp.dstport -e frame.len -Y "udp and (not icmp)"'.format(args.tracefile))
     if codigo:
         sys.exit(-1)
 
     top = cuentaTopBytes(salida)
-
     pintarTarta(top.keys(), top.values(), "topUDPDestBytes.png", "Top puertos UDP destino por numero de bytes")
 
-    #TODO: Añadir código para obtener los datos y generar la gráfica de top puerto origen UDP por paquetes
-    logging.info('Ejecutando tshark para obtener el top puertos UDP origen por paquetes')
-    codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e udp.srcport'.format(args.tracefile))
-    if codigo:
-        sys.exit(-1)
-
-    top = cuentaTopPaquetes(salida)
-
-    pintarTarta(top.keys(), top.values(), "topUDPSrcPaquetes.png", "Top puertos UDP origen por numero de paquetes")
-
     #TODO: Añadir código para obtener los datos y generar la gráfica de top puerto destino UDP por paquetes
-    logging.info('Ejecutando tshark para obtener el top puertos UDP destino por paquetes')
-    codigo,salida = ejecutarComandoObtenerSalida('tshark -r {} -T fields -e udp.dstport'.format(args.tracefile))
-    if codigo:
-        sys.exit(-1)
-
     top = cuentaTopPaquetes(salida)
-
     pintarTarta(top.keys(), top.values(), "topUDPDestPaquetes.png", "Top puertos UDP destino por numero de paquetes")
 
 
@@ -484,7 +441,7 @@ if __name__ == "__main__":
 
     #Obtención de las ECDF de tamaño de los paquetes
     #TODO: Añadir código para obtener los datos y generar la gráfica de la ECDF de los tamaños de los paquetes a nivel 2
-    logging.info('Ejecutando tshark para obtener la ECDF de los tamaños de paquetes a nivel 2')
+    logging.info('Ejecutando tshark para obtener la ECDF de los tamaños de paquetes a nivel 2 (origen)')
     codigo,salida = ejecutarComandoObtenerSalida("tshark -r {} -T fields -e frame.len -Y 'eth.src eq {}'".format(args.tracefile, args.mac))
     if codigo:
         sys.exit(-1)
@@ -494,8 +451,9 @@ if __name__ == "__main__":
         if line != '':
             tamanos.append(int(line))
 
-    pintarECDF(tamanos, "ECDFMACSrc.png", "Tamaño de paquetes a nivel 2 con MAC como origen", "Tamaño (B)", "P{x<X}")
+    pintarECDF(tamanos, "ECDFMACSrc.png", "Tamaño de paquetes a nivel 2 con MAC como origen", "Tamaño (B)", "P{X<x}")
 
+    logging.info('Ejecutando tshark para obtener la ECDF de los tamaños de paquetes a nivel 2 (destino)')
     codigo,salida = ejecutarComandoObtenerSalida("tshark -r {} -T fields -e frame.len -Y 'eth.dst eq {}'".format(args.tracefile, args.mac))
     if codigo:
         sys.exit(-1)
@@ -505,30 +463,55 @@ if __name__ == "__main__":
         if line != '':
             tamanos.append(int(line))
 
-    pintarECDF(tamanos, "ECDFMACDest.png", "Tamaño de paquetes a nivel 2 con MAC como destino", "Tamaño (B)", "P{x<X}")
+    pintarECDF(tamanos, "ECDFMACDest.png", "Tamaño de paquetes a nivel 2 con MAC como destino", "Tamaño (B)", "P{X<x}")
 
     #Obtención de las ECDF de tamaño de los tiempos entre llegadas
     #TODO: Añadir código para obtener los datos y generar la gráfica de la ECDF de los tiempos entre llegadas para el flujo TCP
-    logging.info('Ejecutando tshark para obtener la ECDF del flujo TCP')
-    codigo,salida = ejecutarComandoObtenerSalida("tshark -r {0} -T fields -e frame.time_delta -Y 'ip.addr eq {1}'".format(args.tracefile, args.ip_flujo_tcp))
+    logging.info('Ejecutando tshark para obtener la ECDF del flujo TCP (origen)')
+    codigo,salida = ejecutarComandoObtenerSalida("tshark -r {} -T fields -e frame.time_delta -Y 'ip.src eq {} and (not icmp)'".format(args.tracefile, args.ip_flujo_tcp))
     if codigo:
         sys.exit(-1)
 
     tiempos = []
     for line in salida.split('\n'):
         if line != '':
-            tiempos.append(float(line)) #revisar
+            tiempos.append(float(line))
 
-    pintarECDF(tiempos, "ECDFdeltaTCP.png", "Tiempo entre paquetes para flujo TCP", "Tiempo (s)", "P{x<X}")
+    pintarECDF(tiempos, "ECDFdeltaTCPSrc.png", "Tiempo entre paquetes para flujo TCP (sentido de salida)", "Tiempo (s)", "P{X<x}")
+
+    logging.info('Ejecutando tshark para obtener la ECDF del flujo TCP (destino)')
+    codigo,salida = ejecutarComandoObtenerSalida("tshark -r {} -T fields -e frame.time_delta -Y 'ip.dst eq {} and (not icmp)'".format(args.tracefile, args.ip_flujo_tcp))
+    if codigo:
+        sys.exit(-1)
+
+    tiempos = []
+    for line in salida.split('\n'):
+        if line != '':
+            tiempos.append(float(line))
+
+    pintarECDF(tiempos, "ECDFdeltaTCPDest.png", "Tiempo entre paquetes para flujo TCP (sentido de llegada)", "Tiempo (s)", "P{X<x}")
+
     #TODO: Añadir código para obtener los datos y generar la gráfica de la ECDF de los tiempos entre llegadas para el flujo UDP
-    logging.info('Ejecutando tshark para obtener la ECDF del flujo UDP')
-    codigo,salida = ejecutarComandoObtenerSalida("tshark -r {0} -T fields -e frame.time_delta -Y 'udp.srcport eq {1} or udp.dstport eq {1}'".format(args.tracefile, args.port_flujo_udp))
+    logging.info('Ejecutando tshark para obtener la ECDF del flujo UDP (origen)')
+    codigo,salida = ejecutarComandoObtenerSalida("tshark -r {} -T fields -e frame.time_delta -Y 'udp.srcport eq {} and (not icmp)'".format(args.tracefile, args.port_flujo_udp))
     if codigo:
         sys.exit(-1)
 
     tiempos = []
     for line in salida.split('\n'):
         if line != '':
-            tiempos.append(float(line)) #revisar
+            tiempos.append(float(line))
+            #TODO: A PARTIR DE AQUÍ NO TIRA
+    pintarECDF(tiempos, "ECDFdeltaUDPSrc.png", "Tiempo entre paquetes para flujo UDP (sentido de salida)", "Tiempo (s)", "P{X<x}")
 
-    pintarECDF(tiempos, "ECDFdeltaUDP.png", "Tiempo entre paquetes para flujo UDP", "Tiempo (s)", "P{x<X}")
+    logging.info('Ejecutando tshark para obtener la ECDF del flujo UDP (destino)')
+    codigo,salida = ejecutarComandoObtenerSalida("tshark -r {} -T fields -e frame.time_delta -Y 'udp.dstport eq {} and (not icmp)'".format(args.tracefile, args.port_flujo_udp))
+    if codigo:
+        sys.exit(-1)
+
+    tiempos = []
+    for line in salida.split('\n'):
+        if line != '':
+            tiempos.append(float(line))
+
+    pintarECDF(tiempos, "ECDFdeltaUDPDest.png", "Tiempo entre paquetes para flujo UDP (sentido de llegada)", "Tiempo (s)", "P{X<x}")
