@@ -470,7 +470,7 @@ if __name__ == "__main__":
     #Obtención de las ECDF de tamaño de los tiempos entre llegadas
     #TODO: Añadir código para obtener los datos y generar la gráfica de la ECDF de los tiempos entre llegadas para el flujo TCP
     logging.info('Ejecutando tshark para obtener la ECDF del flujo TCP (origen)')
-    codigo,salida = ejecutarComandoObtenerSalida("tshark -r {} -T fields -e frame.time_delta_displayed -Y 'ip.src eq {} and (not icmp)'".format(args.tracefile, args.ip_flujo_tcp))
+    codigo,salida = ejecutarComandoObtenerSalida("tshark -r {} -T fields -e frame.time_delta_displayed -Y 'tcp and ip.src eq {} and (not icmp)'".format(args.tracefile, args.ip_flujo_tcp))
     if codigo:
         sys.exit(-1)
 
@@ -482,7 +482,7 @@ if __name__ == "__main__":
     pintarECDF(tiempos, "ECDFdeltaTCPSrc.png", "Tiempo entre paquetes para flujo TCP (sentido de salida)", "Tiempo (s)", "P{X<x}")
 
     logging.info('Ejecutando tshark para obtener la ECDF del flujo TCP (destino)')
-    codigo,salida = ejecutarComandoObtenerSalida("tshark -r {} -T fields -e frame.time_delta_displayed -Y 'ip.dst eq {} and (not icmp)'".format(args.tracefile, args.ip_flujo_tcp))
+    codigo,salida = ejecutarComandoObtenerSalida("tshark -r {} -T fields -e frame.time_delta_displayed -Y 'tcp and ip.dst eq {} and (not icmp)'".format(args.tracefile, args.ip_flujo_tcp))
     if codigo:
         sys.exit(-1)
 
