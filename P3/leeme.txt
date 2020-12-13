@@ -3,6 +3,11 @@ Autores: Leandro García Ortiz y Fabián Gutiérrez Peña.
 --------------------------------------------------------------------------------
 
 Comentarios:
+-Se adjunta un pequeño script de bash para lanzar practicaa3.py con los
+ argumentos correspondientes.
+-El análisis realizado en la memoria está limitado al contenido de teoría visto
+ hasta la fecha. El grueso de la capa de transporte está previsto para el
+ miércoles 16 de diciembre, tres días después de la entrega de la práctica.
 
 --------------------------------------------------------------------------------
 
