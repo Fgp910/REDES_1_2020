@@ -3,7 +3,7 @@ Autores: Leandro García Ortiz y Fabián Alejandro Gutiérrez Peña.
 --------------------------------------------------------------------------------
 
 Comentarios:
--Se adjunta un pequeño script de bash para lanzar practicaa3.py con los
+-Se adjunta un pequeño script de bash para lanzar practica3.py con los
  argumentos correspondientes (run.sh).
 -Como el tamaño de la traza lo permite, se ejecutan múltiples llamadas a Tshark
  a lo largo de la práctica. Para una traza de mayor tamaño (más cercana a una

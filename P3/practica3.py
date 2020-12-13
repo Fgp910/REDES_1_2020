@@ -82,19 +82,22 @@ def ejecutarComandoObtenerSalida(comando):
     Descripción: Esta función pinta una gráfica ECDF para unos datos de entrada y la guarda en una imagen
 '''
 def pintarECDF(datos,nombre_fichero,titulo,titulo_x,titulo_y):
-    x, y = calcularECDF(datos)
-    x.append(x[-1])
-    y.append(1)
-    fig1, ax1 = plt.subplots()
-    plt.step(x, y, '-')
-    _ = plt.xticks(rotation=45)
-    plt.title(titulo)
-    fig1.set_size_inches(12, 10)
-    plt.tight_layout()
-    plt.locator_params(nbins=20)
-    ax1.set_xlabel(titulo_x)
-    ax1.set_ylabel(titulo_y)
-    plt.savefig(nombre_fichero, bbox_inches='tight')
+	try:
+	    x, y = calcularECDF(datos)
+	    x.append(x[-1])
+	    y.append(1)
+	    fig1, ax1 = plt.subplots()
+	    plt.step(x, y, '-')
+	    _ = plt.xticks(rotation=45)
+	    plt.title(titulo)
+	    fig1.set_size_inches(12, 10)
+	    plt.tight_layout()
+	    plt.locator_params(nbins=20)
+	    ax1.set_xlabel(titulo_x)
+	    ax1.set_ylabel(titulo_y)
+	    plt.savefig(nombre_fichero, bbox_inches='tight')
+    except IndexError:
+    	logging.info("No hay paquetes que cumplan los requisitos")
 
 
 '''
@@ -501,10 +504,7 @@ if __name__ == "__main__":
         if line != '':
             tiempos.append(float(line))
 
-    try:
-        pintarECDF(tiempos, "ECDFdeltaUDPSrc.png", "Tiempo entre paquetes para flujo UDP (sentido de salida)", "Tiempo (s)", "P{X<x}")
-    except IndexError:
-        logging.info('No hay paquetes UDP con puerto de origen {}'.format(args.port_flujo_udp))
+    pintarECDF(tiempos, "ECDFdeltaUDPSrc.png", "Tiempo entre paquetes para flujo UDP (sentido de salida)", "Tiempo (s)", "P{X<x}")
 
     logging.info('Ejecutando tshark para obtener la ECDF del flujo UDP (destino)')
     codigo,salida = ejecutarComandoObtenerSalida("tshark -r {} -T fields -e frame.time_delta -Y 'udp.dstport eq {} and (not icmp)'".format(args.tracefile, args.port_flujo_udp))
