@@ -82,22 +82,22 @@ def ejecutarComandoObtenerSalida(comando):
     Descripción: Esta función pinta una gráfica ECDF para unos datos de entrada y la guarda en una imagen
 '''
 def pintarECDF(datos,nombre_fichero,titulo,titulo_x,titulo_y):
-	try:
-	    x, y = calcularECDF(datos)
-	    x.append(x[-1])
-	    y.append(1)
-	    fig1, ax1 = plt.subplots()
-	    plt.step(x, y, '-')
-	    _ = plt.xticks(rotation=45)
-	    plt.title(titulo)
-	    fig1.set_size_inches(12, 10)
-	    plt.tight_layout()
-	    plt.locator_params(nbins=20)
-	    ax1.set_xlabel(titulo_x)
-	    ax1.set_ylabel(titulo_y)
-	    plt.savefig(nombre_fichero, bbox_inches='tight')
+    try:
+        x, y = calcularECDF(datos)
+        x.append(x[-1])
+        y.append(1)
+        fig1, ax1 = plt.subplots()
+        plt.step(x, y, '-')
+        _ = plt.xticks(rotation=45)
+        plt.title(titulo)
+        fig1.set_size_inches(12, 10)
+        plt.tight_layout()
+        plt.locator_params(nbins=20)
+        ax1.set_xlabel(titulo_x)
+        ax1.set_ylabel(titulo_y)
+        plt.savefig(nombre_fichero, bbox_inches='tight')
     except IndexError:
-    	logging.info("No hay paquetes que cumplan los requisitos")
+        logging.info("No hay paquetes que cumplan los requisitos")
 
 
 '''
