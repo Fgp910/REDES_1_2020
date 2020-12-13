@@ -12,3 +12,21 @@ Criterios de evaluación:
 
 -Fichero leeme.txt bien explicado: Realizado: Se confeccionó el presente fichero
  a medida que se iban cumpliendo cada uno de los criterios solicitados.
+
+-Script:
+    -Cálculo de porcentajes por protocolos:
+    -Obtención del top de puertos:
+    -Obtención del top de direcciones IP:
+    -Cálculo del caudal/throughput/tasa/ancho de banda por sentido:
+    -Obtención de la ECDF del tamaño de paquetes:
+    -Obtención de la ECDF de los interarrivals/intervalos de los flujos
+     indicados por el generador de PCAP:
+
+-Memoria:
+    -Porcentajes por protocolos:
+    -Top de puertos:
+    -Top de direcciones IP:
+    -Series temporales del caudal/throughput/tasa/ancho de banda por sentido:
+    -ECDFs del tamaño de paquetes:
+    -ECDFs de los interarrivals/intervalos de los flujos indicados por el
+     generador de PCAP:
