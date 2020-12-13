@@ -470,7 +470,7 @@ if __name__ == "__main__":
     #Obtención de las ECDF de tamaño de los tiempos entre llegadas
     #TODO: Añadir código para obtener los datos y generar la gráfica de la ECDF de los tiempos entre llegadas para el flujo TCP
     logging.info('Ejecutando tshark para obtener la ECDF del flujo TCP (origen)')
-    codigo,salida = ejecutarComandoObtenerSalida("tshark -r {} -T fields -e frame.time_delta -Y 'ip.src eq {} and (not icmp)'".format(args.tracefile, args.ip_flujo_tcp))
+    codigo,salida = ejecutarComandoObtenerSalida("tshark -r {} -T fields -e frame.time_delta_displayed -Y 'ip.src eq {} and (not icmp)'".format(args.tracefile, args.ip_flujo_tcp))
     if codigo:
         sys.exit(-1)
 
@@ -482,7 +482,7 @@ if __name__ == "__main__":
     pintarECDF(tiempos, "ECDFdeltaTCPSrc.png", "Tiempo entre paquetes para flujo TCP (sentido de salida)", "Tiempo (s)", "P{X<x}")
 
     logging.info('Ejecutando tshark para obtener la ECDF del flujo TCP (destino)')
-    codigo,salida = ejecutarComandoObtenerSalida("tshark -r {} -T fields -e frame.time_delta -Y 'ip.dst eq {} and (not icmp)'".format(args.tracefile, args.ip_flujo_tcp))
+    codigo,salida = ejecutarComandoObtenerSalida("tshark -r {} -T fields -e frame.time_delta_displayed -Y 'ip.dst eq {} and (not icmp)'".format(args.tracefile, args.ip_flujo_tcp))
     if codigo:
         sys.exit(-1)
 
@@ -495,7 +495,7 @@ if __name__ == "__main__":
 
     #TODO: Añadir código para obtener los datos y generar la gráfica de la ECDF de los tiempos entre llegadas para el flujo UDP
     logging.info('Ejecutando tshark para obtener la ECDF del flujo UDP (origen)')
-    codigo,salida = ejecutarComandoObtenerSalida("tshark -r {} -T fields -e frame.time_delta -Y 'udp.srcport eq {} and (not icmp)'".format(args.tracefile, args.port_flujo_udp))
+    codigo,salida = ejecutarComandoObtenerSalida("tshark -r {} -T fields -e frame.time_delta_displayed -Y 'udp.srcport eq {} and (not icmp)'".format(args.tracefile, args.port_flujo_udp))
     if codigo:
         sys.exit(-1)
 
@@ -507,7 +507,7 @@ if __name__ == "__main__":
     pintarECDF(tiempos, "ECDFdeltaUDPSrc.png", "Tiempo entre paquetes para flujo UDP (sentido de salida)", "Tiempo (s)", "P{X<x}")
 
     logging.info('Ejecutando tshark para obtener la ECDF del flujo UDP (destino)')
-    codigo,salida = ejecutarComandoObtenerSalida("tshark -r {} -T fields -e frame.time_delta -Y 'udp.dstport eq {} and (not icmp)'".format(args.tracefile, args.port_flujo_udp))
+    codigo,salida = ejecutarComandoObtenerSalida("tshark -r {} -T fields -e frame.time_delta_displayed -Y 'udp.dstport eq {} and (not icmp)'".format(args.tracefile, args.port_flujo_udp))
     if codigo:
         sys.exit(-1)
 
