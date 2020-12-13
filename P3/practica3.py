@@ -14,7 +14,6 @@ import time
 import logging
 import shlex
 import subprocess
-import pandas as pd
 from io import StringIO
 import os
 import warnings
@@ -501,8 +500,11 @@ if __name__ == "__main__":
     for line in salida.split('\n'):
         if line != '':
             tiempos.append(float(line))
-            #TODO: A PARTIR DE AQUÍ NO TIRA
-    pintarECDF(tiempos, "ECDFdeltaUDPSrc.png", "Tiempo entre paquetes para flujo UDP (sentido de salida)", "Tiempo (s)", "P{X<x}")
+
+    try:
+        pintarECDF(tiempos, "ECDFdeltaUDPSrc.png", "Tiempo entre paquetes para flujo UDP (sentido de salida)", "Tiempo (s)", "P{X<x}")
+    except IndexError:
+        logging.info('No hay paquetes UDP con puerto de origen {}'.format(args.port_flujo_udp))
 
     logging.info('Ejecutando tshark para obtener la ECDF del flujo UDP (destino)')
     codigo,salida = ejecutarComandoObtenerSalida("tshark -r {} -T fields -e frame.time_delta -Y 'udp.dstport eq {} and (not icmp)'".format(args.tracefile, args.port_flujo_udp))
