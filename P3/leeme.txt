@@ -1,10 +1,15 @@
-Autores: Leandro García Ortiz y Fabián Gutiérrez Peña.
+Autores: Leandro García Ortiz y Fabián Alejandro Gutiérrez Peña.
 
 --------------------------------------------------------------------------------
 
 Comentarios:
 -Se adjunta un pequeño script de bash para lanzar practicaa3.py con los
- argumentos correspondientes.
+ argumentos correspondientes (run.sh).
+-Como el tamaño de la traza lo permite, se ejecutan múltiples llamadas a Tshark
+ a lo largo de la práctica. Para una traza de mayor tamaño (más cercana a una
+ traza real) sería preferible almacenar la información en alguna estructura
+ apropiada en lugar de hacer consultas directamente sobre la traza repetidas
+ veces.
 -El análisis realizado en la memoria está limitado al contenido de teoría visto
  hasta la fecha. El grueso de la capa de transporte está previsto para el
  miércoles 16 de diciembre, tres días después de la entrega de la práctica.
@@ -19,19 +24,41 @@ Criterios de evaluación:
  a medida que se iban cumpliendo cada uno de los criterios solicitados.
 
 -Script:
-    -Cálculo de porcentajes por protocolos:
-    -Obtención del top de puertos:
-    -Obtención del top de direcciones IP:
-    -Cálculo del caudal/throughput/tasa/ancho de banda por sentido:
-    -Obtención de la ECDF del tamaño de paquetes:
+    -Cálculo de porcentajes por protocolos: Realizado: Los resultados obtenidos
+     concuerdan con los de Wireshark.
+    -Obtención del top de puertos: Realizado: Se aplican los filtros pertinentes
+     y se tiene cuidado de excuir los paquetes ICMP del cómputo.
+    -Obtención del top de direcciones IP: Realizado: Se aplican los filtros
+     pertinentes en cada llamada a Tshark.
+    -Cálculo del caudal/throughput/tasa/ancho de banda por sentido: Realizado:
+     Las series obtenidas concuerdan con las series de Wireshark generadas con
+     iograph en bits por segundo (se añaden los filtros pertinentes).
+    -Obtención de la ECDF del tamaño de paquetes: Realizado: Se aplican los
+     filtros pertinentes para cada sentido (salida y llegada).
     -Obtención de la ECDF de los interarrivals/intervalos de los flujos
-     indicados por el generador de PCAP:
+     indicados por el generador de PCAP: Realizado: Se genera una ECDF por
+     protocolo (TCP y UDP) y por sentido (salida y llegada), cada una con los
+     filtros pertinentes. En particular, se tiene cuidado de excluir los
+     paquetes ICMP. Para UDP solo se genera la ECDF en el sentido de llegada
+     porque no hay flujo en el sentido de salida.
 
 -Memoria:
-    -Porcentajes por protocolos:
-    -Top de puertos:
-    -Top de direcciones IP:
+    -Porcentajes por protocolos: Realizado: Se añaden a la memoria en los
+     lugares indicados con sendos comentarios.
+    -Top de puertos: Realizado: Se añade a la memoria cada 'tarta' en los
+     lugares indicados con sus respectivos comentarios. Se optó por incluir una
+     gráfica por página para garantizar un tamaño legible.
+    -Top de direcciones IP: Realizado: Se añade a la memoria cada 'tarta' en los
+     lugares indicados con sus respectivos comentarios. Se optó por incluir una
+     gráfica por página para garantizar un tamaño legible.
     -Series temporales del caudal/throughput/tasa/ancho de banda por sentido:
-    -ECDFs del tamaño de paquetes:
+     Realizado: Se añade a la memoria cada serie en los lugares indicados con
+     sendos comentarios. Se optó por incluir una gráfica por página para
+     garantizar un tamaño legible.
+    -ECDFs del tamaño de paquetes: Realizado: Se añade a la memoria una ECDF por
+     sentido con sus respectivos comentarios. Se optó por incluir una gráfica
+     por página para garantizar un tamaño legible.
     -ECDFs de los interarrivals/intervalos de los flujos indicados por el
-     generador de PCAP:
+     generador de PCAP: Realizado: Se añade a la memoria una ECDF por protocolo
+     y por sentido, cada una con un comentario. Se optó por incluir una gráfica
+     por página para garantizar un tamaño legible.
